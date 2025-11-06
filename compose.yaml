@@ -1,0 +1,28 @@
+services:
+  pft:
+    image: akaririn/library-management-system:latest
+    restart: always
+    ports:
+      - 8000:8000
+    depends_on:
+      - mysql
+    environment:
+      SERVER_PORT: "8000"
+      DB_URL: "mysql://mysql:3306/lms"
+      DB_USERNAME: "lms"
+      DB_PASSWORD: "lms_password"
+      JWT_SECRET: "YOUR_JWT_SECRET"
+  mysql:
+    image: mysql:latest
+    restart: always
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    volumes:
+      - ./data:/var/lib/mysql
+      - /etc/localtime:/etc/localtime:ro
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: "root_password"
+      MYSQL_DATABASE: "lms"
+      MYSQL_USER: "lms"
+      MYSQL_PASSWORD: "lms_password"
