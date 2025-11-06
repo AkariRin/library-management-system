@@ -112,7 +112,7 @@ public class BookItemController {
      * @param request 图书副本请求
      * @return 更新后的图书副本详情
      */
-    @PutMapping("/{itemId}")
+    @PostMapping("/{itemId}")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<ApiResponse<BookItemResponse>> updateBookItem(
             @PathVariable Integer itemId,

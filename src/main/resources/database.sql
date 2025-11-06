@@ -42,3 +42,26 @@ CREATE TABLE `book_items` (
                               KEY `idx_location` (`location`),
                               CONSTRAINT `fk_book_items_book_id` FOREIGN KEY (`book_id`) REFERENCES `books` (`book_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='图书副本表（具体物理书籍）';
+
+-- 借阅记录表（记录所有借书、还书、续借操作）
+CREATE TABLE `borrow_records` (
+                                  `record_id` varchar(36) NOT NULL COMMENT '借阅记录ID（主键，UUID）',
+                                  `user_uuid` varchar(36) NOT NULL COMMENT '用户UUID（外键，关联用户表）',
+                                  `item_id` int(11) NOT NULL COMMENT '图书副本ID（外键，关联book_items表）',
+
+    -- 借阅时间相关字段
+                                  `borrow_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '借出日期',
+                                  `due_date` datetime NOT NULL COMMENT '应还日期',
+                                  `return_date` datetime DEFAULT NULL COMMENT '实际归还日期',
+    -- 状态管理
+                                  `status` enum('Checked Out', 'Returned') NOT NULL DEFAULT 'Checked Out' COMMENT '借阅状态',
+
+                                  PRIMARY KEY (`record_id`),
+                                  KEY `idx_user_uuid` (`user_uuid`),
+                                  KEY `idx_item_id` (`item_id`),
+                                  KEY `idx_borrow_date` (`borrow_date`),
+                                  KEY `idx_status` (`status`),
+                                  KEY `idx_user_status` (`user_uuid`, `status`),
+                                  CONSTRAINT `fk_borrow_records_user_uuid` FOREIGN KEY (`user_uuid`) REFERENCES `user` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE,
+                                  CONSTRAINT `fk_borrow_records_item_id` FOREIGN KEY (`item_id`) REFERENCES `book_items` (`item_id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='借阅记录表';

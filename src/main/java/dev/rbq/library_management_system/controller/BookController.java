@@ -110,7 +110,7 @@ public class BookController {
      * @param request 图书请求
      * @return 更新后的图书详情
      */
-    @PutMapping("/{bookId}")
+    @PostMapping("/{bookId}")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<ApiResponse<BookResponse>> updateBook(
             @PathVariable Integer bookId,
