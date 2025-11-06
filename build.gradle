@@ -60,12 +60,12 @@ node {
 tasks.register('buildFrontend', com.github.gradle.node.pnpm.task.PnpmTask) {
     args = ['run', 'build']
     dependsOn tasks.pnpmInstall
-    inputs.dir('frontend/src')
-    inputs.dir('frontend/public')
-    inputs.file('frontend/package.json')
-    inputs.file('frontend/pnpm-lock.yaml')
-    inputs.file('frontend/vite.config.js')
-    inputs.file('frontend/index.html')
+    inputs.dir(layout.projectDirectory.dir('frontend')) {
+        exclude 'node_modules'
+        exclude 'dist'
+        exclude '.idea'
+        exclude '.eslintcache'
+    }
     outputs.dir('frontend/dist')
 }
 
