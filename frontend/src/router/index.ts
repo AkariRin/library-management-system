@@ -46,11 +46,7 @@ router.beforeEach((to, from, next) => {
 
 // 全局后置路由守卫，设置页面标题
 router.afterEach((to) => {
-    document.title = `${String(to.name)} | Library Management System`
-    document.title = `${String(to.name)} | Personal Finance Tracker`
-    document.title = 'Library Management System'
-    document.title = 'Personal Finance Tracker'
-  }
+  document.title = `${String(to.name)} | Library Management System`
 })
 
 export default router
