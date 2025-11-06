@@ -1,11 +1,11 @@
-package dev.rbq.librarymanagementsystem.service;
+package dev.rbq.library_management_system.service;
 
-import dev.rbq.librarymanagementsystem.dto.auth.AuthResponse;
-import dev.rbq.librarymanagementsystem.dto.user.ChangePasswordRequest;
-import dev.rbq.librarymanagementsystem.dto.user.ChangeUsernameRequest;
-import dev.rbq.librarymanagementsystem.entity.User;
-import dev.rbq.librarymanagementsystem.repository.UserRepository;
-import dev.rbq.librarymanagementsystem.security.UserDetailsImpl;
+import dev.rbq.library_management_system.dto.auth.AuthResponse;
+import dev.rbq.library_management_system.dto.user.ChangePasswordRequest;
+import dev.rbq.library_management_system.dto.user.ChangeUsernameRequest;
+import dev.rbq.library_management_system.entity.User;
+import dev.rbq.library_management_system.repository.UserRepository;
+import dev.rbq.library_management_system.security.UserDetailsImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;

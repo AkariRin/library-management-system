@@ -1,4 +1,4 @@
-package dev.rbq.librarymanagementsystem.dto.auth;
+package dev.rbq.library_management_system.dto.auth;
 
 /**
  * 认证响应 DTO

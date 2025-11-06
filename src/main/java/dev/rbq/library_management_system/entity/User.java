@@ -1,4 +1,4 @@
-package dev.rbq.librarymanagementsystem.entity;
+package dev.rbq.library_management_system.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;

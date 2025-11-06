@@ -1,4 +1,4 @@
-package dev.rbq.librarymanagementsystem.dto.auth;
+package dev.rbq.library_management_system.dto.auth;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;

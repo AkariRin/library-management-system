@@ -1,6 +1,6 @@
-package dev.rbq.librarymanagementsystem.security;
+package dev.rbq.library_management_system.security;
 
-import dev.rbq.librarymanagementsystem.entity.User;
+import dev.rbq.library_management_system.entity.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

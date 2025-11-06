@@ -1,6 +1,6 @@
-package dev.rbq.librarymanagementsystem.config;
+package dev.rbq.library_management_system.config;
 
-import dev.rbq.librarymanagementsystem.security.UserDetailsServiceImpl;
+import dev.rbq.library_management_system.security.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

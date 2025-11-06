@@ -1,10 +1,10 @@
-package dev.rbq.librarymanagementsystem.controller;
+package dev.rbq.library_management_system.controller;
 
-import dev.rbq.librarymanagementsystem.dto.ApiResponse;
-import dev.rbq.librarymanagementsystem.dto.auth.AuthResponse;
-import dev.rbq.librarymanagementsystem.dto.user.ChangePasswordRequest;
-import dev.rbq.librarymanagementsystem.dto.user.ChangeUsernameRequest;
-import dev.rbq.librarymanagementsystem.service.UserService;
+import dev.rbq.library_management_system.dto.ApiResponse;
+import dev.rbq.library_management_system.dto.auth.AuthResponse;
+import dev.rbq.library_management_system.dto.user.ChangePasswordRequest;
+import dev.rbq.library_management_system.dto.user.ChangeUsernameRequest;
+import dev.rbq.library_management_system.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

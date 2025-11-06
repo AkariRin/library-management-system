@@ -1,10 +1,10 @@
-package dev.rbq.librarymanagementsystem.controller;
+package dev.rbq.library_management_system.controller;
 
-import dev.rbq.librarymanagementsystem.dto.ApiResponse;
-import dev.rbq.librarymanagementsystem.dto.auth.AuthResponse;
-import dev.rbq.librarymanagementsystem.dto.auth.LoginRequest;
-import dev.rbq.librarymanagementsystem.dto.auth.RegisterRequest;
-import dev.rbq.librarymanagementsystem.service.AuthService;
+import dev.rbq.library_management_system.dto.ApiResponse;
+import dev.rbq.library_management_system.dto.auth.AuthResponse;
+import dev.rbq.library_management_system.dto.auth.LoginRequest;
+import dev.rbq.library_management_system.dto.auth.RegisterRequest;
+import dev.rbq.library_management_system.service.AuthService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;

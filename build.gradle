@@ -7,7 +7,7 @@ plugins {
 
 group = 'dev.rbq'
 version = '0.0.1-SNAPSHOT'
-description = 'library-management-system'
+description = 'Library Management System'
 
 java {
     toolchain {

@@ -1,4 +1,4 @@
-package dev.rbq.librarymanagementsystem.config;
+package dev.rbq.library_management_system.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;

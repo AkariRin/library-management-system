@@ -1,4 +1,4 @@
-package dev.rbq.librarymanagementsystem;
+package dev.rbq.library_management_system;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

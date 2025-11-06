@@ -1,7 +1,7 @@
-package dev.rbq.librarymanagementsystem.security;
+package dev.rbq.library_management_system.security;
 
-import dev.rbq.librarymanagementsystem.entity.User;
-import dev.rbq.librarymanagementsystem.repository.UserRepository;
+import dev.rbq.library_management_system.entity.User;
+import dev.rbq.library_management_system.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

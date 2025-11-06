@@ -1,4 +1,4 @@
-package dev.rbq.librarymanagementsystem.dto;
+package dev.rbq.library_management_system.dto;
 
 /**
  * 通用响应 DTO

@@ -1,11 +1,11 @@
-package dev.rbq.librarymanagementsystem.service;
+package dev.rbq.library_management_system.service;
 
-import dev.rbq.librarymanagementsystem.dto.auth.AuthResponse;
-import dev.rbq.librarymanagementsystem.dto.auth.LoginRequest;
-import dev.rbq.librarymanagementsystem.dto.auth.RegisterRequest;
-import dev.rbq.librarymanagementsystem.entity.User;
-import dev.rbq.librarymanagementsystem.repository.UserRepository;
-import dev.rbq.librarymanagementsystem.security.UserDetailsImpl;
+import dev.rbq.library_management_system.dto.auth.AuthResponse;
+import dev.rbq.library_management_system.dto.auth.LoginRequest;
+import dev.rbq.library_management_system.dto.auth.RegisterRequest;
+import dev.rbq.library_management_system.entity.User;
+import dev.rbq.library_management_system.repository.UserRepository;
+import dev.rbq.library_management_system.security.UserDetailsImpl;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;

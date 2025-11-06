@@ -1,6 +1,6 @@
-package dev.rbq.librarymanagementsystem.repository;
+package dev.rbq.library_management_system.repository;
 
-import dev.rbq.librarymanagementsystem.entity.User;
+import dev.rbq.library_management_system.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
