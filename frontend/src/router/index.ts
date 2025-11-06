@@ -8,6 +8,7 @@ import settingsView from '@/views/settingsView.vue'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
+    { path: '/', redirect: '/settings' },
     { path: '/login', name: 'login', component: loginView, meta: { isPublic: true } },
     { path: '/register', name: 'register', component: registerView, meta: { isPublic: true } },
     { path: '/settings', name: 'Settings', component: settingsView},
@@ -17,7 +18,7 @@ const router = createRouter({
 // 全局前置路由守卫
 router.beforeEach((to, from, next) => {
   const userStore = useUserdataStore()
-  const isLoggedIn = !!userStore.token
+  const isLoggedIn = userStore.isLoggedIn
 
   // 公开页面直接放行
   if (to.meta.isPublic) {
@@ -45,9 +46,9 @@ router.beforeEach((to, from, next) => {
 
 // 全局后置路由守卫，设置页面标题
 router.afterEach((to) => {
-  if (to.name) {
+    document.title = `${String(to.name)} | Library Management System`
     document.title = `${String(to.name)} | Personal Finance Tracker`
-  } else {
+    document.title = 'Library Management System'
     document.title = 'Personal Finance Tracker'
   }
 })

@@ -96,6 +96,7 @@
 import { computed, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useUserdataStore } from '@/stores/userdata'
+import axios from 'axios'
 
 const route = useRoute()
 const router = useRouter()
@@ -114,17 +115,22 @@ const logout = () => {
   logoutDialog.value = true
 }
 
-const confirmLogout = () => {
+const confirmLogout = async () => {
   try {
+    await axios.post('/api/auth/logout')
     user.logout()
     logoutDialog.value = false
     snackbarText.value = 'Successfully logged out'
     snackbar.value = true
-    router.push({ name: 'login' })
+    setTimeout(() => {
+      router.push({ name: 'login' })
+    }, 1000)
   } catch (error) {
     console.error('Logout failed:', error)
-    snackbarText.value = 'An error occured while logging out'
-    snackbar.value = true
+    // Even if logout fails on server, clear local state
+    user.logout()
+    logoutDialog.value = false
+    router.push({ name: 'login' })
   }
 }
 

@@ -60,12 +60,7 @@ node {
 tasks.register('buildFrontend', com.github.gradle.node.pnpm.task.PnpmTask) {
     args = ['run', 'build']
     dependsOn tasks.pnpmInstall
-    inputs.dir(layout.projectDirectory.dir('frontend')) {
-        exclude 'node_modules'
-        exclude 'dist'
-        exclude '.idea'
-        exclude '.eslintcache'
-    }
+    inputs.dir('frontend').withPathSensitivity(PathSensitivity.RELATIVE)
     outputs.dir('frontend/dist')
 }
 

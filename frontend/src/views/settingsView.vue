@@ -6,12 +6,20 @@
     <v-divider></v-divider>
     <v-card-text class="my-8">
       <div class="d-flex align-center mb-10">
-        <div class="text-subtitle-1 text-grey-darken-2" style="width: 120px;">ID</div>
-        <div class="text-h5 text-grey-darken-3">{{ id }}</div>
+        <div class="text-subtitle-1 text-grey-darken-2" style="width: 120px;">UUID</div>
+        <div class="text-h5 text-grey-darken-3">{{ uuid }}</div>
       </div>
-      <div class="d-flex align-center">
+      <div class="d-flex align-center mb-10">
         <div class="text-subtitle-1 text-grey-darken-2" style="width: 120px;">Username</div>
         <div class="text-h5 text-grey-darken-3">{{ username }}</div>
+      </div>
+      <div class="d-flex align-center">
+        <div class="text-subtitle-1 text-grey-darken-2" style="width: 120px;">Role</div>
+        <div class="text-h5 text-grey-darken-3">
+          <v-chip :color="isAdmin ? 'error' : 'primary'" variant="elevated">
+            {{ isAdmin ? 'Administrator' : 'User' }}
+          </v-chip>
+        </div>
       </div>
     </v-card-text>
     <v-divider></v-divider>
@@ -22,8 +30,8 @@
       <v-btn color="warning" variant="elevated" prepend-icon="mdi-lock-reset" @click="openPasswordDialog">
         Change Password
       </v-btn>
-      <v-btn color="error" variant="elevated" prepend-icon="mdi-account-remove" @click="openDeleteDialog">
-        Delete Account
+      <v-btn color="error" variant="elevated" prepend-icon="mdi-logout" @click="handleLogout">
+        Logout
       </v-btn>
     </v-card-actions>
 
@@ -94,38 +102,6 @@
       </v-card>
     </v-dialog>
 
-    <v-dialog v-model="deleteDialog" max-width="500px">
-      <v-card>
-        <v-card-title class="text-h5 text-error">Delete Account</v-card-title>
-        <v-card-text>
-          <v-alert type="warning" variant="tonal" class="mb-4">
-            This action cannot be undone!
-          </v-alert>
-          <p class="text-body-1">
-            Are you sure you want to delete your account? All your data will be permanently removed.
-          </p>
-          <v-form ref="deleteFormRef">
-            <v-text-field
-              v-model="deleteConfirmation"
-              label="Type your username to confirm"
-              variant="underlined"
-              prepend-icon="mdi-alert"
-              :rules="usernameMatchRules"
-              :disabled="loading"
-              class="mt-4"
-            ></v-text-field>
-          </v-form>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn color="grey" variant="text" @click="closeDeleteDialog" :disabled="loading">Cancel</v-btn>
-          <v-btn color="error" variant="elevated" @click="deleteAccount" :loading="loading">
-            Delete Account
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-
     <v-snackbar
       v-model="snackbar"
       :color="snackbarColor"
@@ -163,18 +139,17 @@ interface FormElement {
 const user = useUserdataStore()
 const router = useRouter()
 
-const id = computed(() => user.id)
-const username = computed(() => user.name)
+const uuid = computed(() => user.uuid)
+const username = computed(() => user.username)
+const isAdmin = computed(() => user.admin)
 
 const usernameDialog = ref(false)
 const passwordDialog = ref(false)
-const deleteDialog = ref(false)
 
 const newUsername = ref('')
 const currentPassword = ref('')
 const newPassword = ref('')
 const confirmPassword = ref('')
-const deleteConfirmation = ref('')
 
 const loading = ref(false)
 const snackbar = ref(false)
@@ -183,11 +158,10 @@ const snackbarColor = ref('success')
 
 const usernameFormRef = ref<FormElement | null>(null)
 const passwordFormRef = ref<FormElement | null>(null)
-const deleteFormRef = ref<FormElement | null>(null)
 
 const nameRules = [
-  (v: string) => !!v || 'Display name cannot be empty',
-  (v: string) => (v && v.length >= 1 && v.length <= 50) || 'Display name must be between 1-50 characters'
+  (v: string) => !!v || 'Username cannot be empty',
+  (v: string) => (v && v.length >= 3 && v.length <= 50) || 'Username must be between 3-50 characters'
 ]
 
 const passwordRequiredRules = [
@@ -196,15 +170,11 @@ const passwordRequiredRules = [
 
 const passwordRules = [
   (v: string) => !!v || 'Password cannot be empty',
-  (v: string) => (v && v.length >= 4 && v.length <= 32) || 'Password must be between 4-32 characters'
+  (v: string) => (v && v.length >= 6 && v.length <= 50) || 'Password must be between 6-50 characters'
 ]
 
 const confirmPasswordRules = [
   (v: string) => v === newPassword.value || 'The passwords entered twice do not match'
-]
-
-const usernameMatchRules = [
-  (v: string) => v === id.value || 'Username does not match'
 ]
 
 const openUsernameDialog = () => {
@@ -234,18 +204,6 @@ const closePasswordDialog = () => {
   }
 }
 
-const openDeleteDialog = () => {
-  deleteDialog.value = true
-}
-
-const closeDeleteDialog = () => {
-  deleteDialog.value = false
-  deleteConfirmation.value = ''
-  if (deleteFormRef.value) {
-    deleteFormRef.value.reset()
-  }
-}
-
 const changeUsername = async () => {
   const validator = usernameFormRef.value as FormElement | null
   const { valid } = validator ? await validator.validate() : { valid: false }
@@ -259,19 +217,14 @@ const changeUsername = async () => {
     const response = await axios.post(
       '/api/user/changename',
       {
-        userUuid: user.id,
+        userUuid: user.uuid,
         newUsername: newUsername.value
-      },
-      {
-        headers: {
-          'Authorization': `Bearer ${user.token}`
-        }
       }
     )
 
-    if (response.data.success) {
-      user.updateName(response.data.data.username)
-      snackbarText.value = 'Name updated successfully'
+    if (response.data.success && response.data.data) {
+      user.updateUsername(response.data.data.username)
+      snackbarText.value = 'Username updated successfully'
       snackbarColor.value = 'success'
       snackbar.value = true
       setTimeout(() => {
@@ -284,7 +237,7 @@ const changeUsername = async () => {
     }
   } catch (error: unknown) {
     const axiosError = error as AxiosError
-    console.error('Change name error:', error)
+    console.error('Change username error:', error)
     snackbarText.value = axiosError.response?.data?.message || 'Update failed, please try again'
     snackbarColor.value = 'error'
     snackbar.value = true
@@ -306,14 +259,9 @@ const changePassword = async () => {
     const response = await axios.post(
       '/api/user/changepass',
       {
-        userUuid: user.id,
+        userUuid: user.uuid,
         oldPassword: currentPassword.value,
         newPassword: newPassword.value
-      },
-      {
-        headers: {
-          'Authorization': `Bearer ${user.token}`
-        }
       }
     )
 
@@ -340,45 +288,24 @@ const changePassword = async () => {
   }
 }
 
-const deleteAccount = async () => {
-  const validator = deleteFormRef.value as FormElement | null
-  const { valid } = validator ? await validator.validate() : { valid: false }
-  if (!valid) {
-    return
-  }
-
+const handleLogout = async () => {
   loading.value = true
-
   try {
-    const response = await axios.delete(
-      '/api/user/account',
-      {
-        data: { username: deleteConfirmation.value },
-        headers: {
-          'Authorization': `Bearer ${user.token}`
-        }
-      }
-    )
+    await axios.post('/api/auth/logout')
 
-    if (response.data.success) {
-      snackbarText.value = 'Account deleted successfully, logging out...'
-      snackbarColor.value = 'success'
-      snackbar.value = true
-      setTimeout(() => {
-        user.logout()
-        router.push('/login')
-      }, 1500)
-    } else {
-      snackbarText.value = response.data.message || 'Delete failed'
-      snackbarColor.value = 'error'
-      snackbar.value = true
-    }
-  } catch (error: unknown) {
-    const axiosError = error as AxiosError
-    console.error('Delete account error:', error)
-    snackbarText.value = axiosError.response?.data?.message || 'Delete failed, please try again'
-    snackbarColor.value = 'error'
+    user.logout()
+    snackbarText.value = 'Logged out successfully'
+    snackbarColor.value = 'success'
     snackbar.value = true
+
+    setTimeout(() => {
+      router.push('/login')
+    }, 1000)
+  } catch (error: unknown) {
+    console.error('Logout error:', error)
+    // Even if logout fails on server, clear local state
+    user.logout()
+    router.push('/login')
   } finally {
     loading.value = false
   }

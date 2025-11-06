@@ -26,6 +26,13 @@
                 variant="underlined"
                 :rules="passwordRules"
               ></v-text-field>
+              <v-checkbox
+                v-model="rememberMe"
+                label="Remember me (7 days)"
+                color="primary"
+                hide-details
+                class="mb-4"
+              ></v-checkbox>
               <v-btn
                 block
                 color="primary"
@@ -69,7 +76,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { useRouter, useRoute } from 'vue-router'
+import { useRouter, useRoute, RouterLink } from 'vue-router'
 import { useUserdataStore } from '@/stores/userdata'
 import axios from 'axios'
 
@@ -84,6 +91,7 @@ const user = useUserdataStore()
 
 const username = ref('')
 const password = ref('')
+const rememberMe = ref(false)
 const showPassword = ref(false)
 const loading = ref(false)
 const formRef = ref<HTMLFormElement | null>(null)
@@ -93,11 +101,11 @@ const snackbarColor = ref('success')
 
 const usernameRules = [
   (v: string) => !!v || 'Username cannot be empty',
-  (v: string) => (v && v.length >= 2 && v.length <= 16) || 'Username must be between 2-16 characters'
+  (v: string) => (v && v.length >= 3 && v.length <= 50) || 'Username must be between 3-50 characters'
 ]
 const passwordRules = [
   (v: string) => !!v || 'Password cannot be empty',
-  (v: string) => (v && v.length >= 4 && v.length <= 32) || 'Password must be between 4-32 characters'
+  (v: string) => (v && v.length >= 6 && v.length <= 50) || 'Password must be between 6-50 characters'
 ]
 
 const handleLogin = async () => {
@@ -111,13 +119,14 @@ const handleLogin = async () => {
   try {
     const response = await axios.post('/api/auth/login', {
       username: username.value,
-      password: password.value
+      password: password.value,
+      rememberMe: rememberMe.value
     })
 
     if (response.data.success && response.data.data) {
-      const { token, username, name, balance } = response.data.data
+      const { uuid, username: userName, admin } = response.data.data
 
-      user.login(token, username, name, balance)
+      user.login(uuid, userName, admin)
 
       snackbarText.value = 'Login successful!'
       snackbarColor.value = 'success'
@@ -126,7 +135,7 @@ const handleLogin = async () => {
       const redirectPath = route.query.redirect || '/'
       setTimeout(() => {
         router.push(redirectPath as string)
-      }, 2000)
+      }, 1000)
     } else {
       snackbarText.value = response.data.message || 'Login failed'
       snackbarColor.value = 'error'

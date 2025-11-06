@@ -18,15 +18,6 @@
                 hint="Used for login (unique identifier)"
               ></v-text-field>
               <v-text-field
-                v-model="name"
-                label="Display Name"
-                prepend-inner-icon="mdi-account-circle"
-                type="text"
-                variant="underlined"
-                :rules="nameRules"
-                hint="Your name shown in the app"
-              ></v-text-field>
-              <v-text-field
                 v-model="password"
                 label="Password"
                 prepend-inner-icon="mdi-lock"
@@ -60,7 +51,7 @@
               <v-row>
                 <v-col cols="12" class="text-center">
                   <span class="text-body-2">Already have an account?</span>
-                  <router-link to="/login" class="text-primary ms-1">Sign in</router-link>
+                  <RouterLink to="/login" class="text-primary ms-1">Sign in</RouterLink>
                 </v-col>
               </v-row>
             </v-form>
@@ -89,7 +80,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRouter, RouterLink } from 'vue-router'
 import axios from 'axios'
 
 interface AxiosError {
@@ -100,7 +91,6 @@ interface AxiosError {
 const router = useRouter()
 
 const username = ref('')
-const name = ref('')
 const password = ref('')
 const confirmPassword = ref('')
 const showPassword = ref(false)
@@ -114,15 +104,11 @@ const snackbarColor = ref('success')
 
 const usernameRules = [
   (v: string) => !!v || 'Username cannot be empty',
-  (v: string) => (v && v.length >= 2 && v.length <= 16) || 'Username must be between 2-16 characters'
-]
-const nameRules = [
-  (v: string) => !!v || 'Display name cannot be empty',
-  (v: string) => (v && v.length >= 1 && v.length <= 50) || 'Display name must be between 1-50 characters'
+  (v: string) => (v && v.length >= 3 && v.length <= 50) || 'Username must be between 3-50 characters'
 ]
 const passwordRules = [
   (v: string) => !!v || 'Password cannot be empty',
-  (v: string) => (v && v.length >= 4 && v.length <= 32) || 'Password must be between 4-32 characters'
+  (v: string) => (v && v.length >= 6 && v.length <= 50) || 'Password must be between 6-50 characters'
 ]
 const confirmPasswordRules = [
   (v: string) => v === password.value || 'The passwords entered twice do not match'
@@ -139,7 +125,6 @@ const handleRegister = async () => {
   try {
     const response = await axios.post('/api/auth/register', {
       username: username.value,
-      name: name.value,
       password: password.value
     })
 

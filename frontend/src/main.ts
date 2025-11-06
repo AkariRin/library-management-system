@@ -1,6 +1,7 @@
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
+import axios from 'axios'
 
 import 'vuetify/styles'
 import { createVuetify } from 'vuetify'
@@ -11,6 +12,9 @@ import 'unfonts.css'
 
 import App from './App.vue'
 import router from './router'
+
+// Configure axios to send cookies with requests
+axios.defaults.withCredentials = true
 
 const app = createApp(App)
 

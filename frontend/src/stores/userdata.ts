@@ -2,32 +2,29 @@ import { defineStore } from 'pinia'
 
 export const useUserdataStore = defineStore('userdata', {
   state: () => ({
-    token: null as string | null,
-    id: null as string | null,
-    name: null as string | null,
-    balance: 0.00,
+    uuid: null as string | null,
+    username: null as string | null,
+    admin: false as boolean,
+    isLoggedIn: false as boolean,
   }),
   getters: {
-    isAuthenticated: (state) => !!state.token
+    isAuthenticated: (state) => state.isLoggedIn
   },
   actions: {
-    login(token: string, username: string, name: string, balance: number) {
-      this.token = token
-      this.id = username
-      this.name = name
-      this.balance = balance
+    login(uuid: string, username: string, admin: boolean) {
+      this.uuid = uuid
+      this.username = username
+      this.admin = admin
+      this.isLoggedIn = true
     },
     logout() {
-      this.token = null
-      this.id = null
-      this.name = null
-      this.balance = 0.00
+      this.uuid = null
+      this.username = null
+      this.admin = false
+      this.isLoggedIn = false
     },
-    updateName(name: string) {
-      this.name = name
-    },
-    updateBalance(balance: number) {
-      this.balance = balance
+    updateUsername(username: string) {
+      this.username = username
     },
   },
   persist: true,
