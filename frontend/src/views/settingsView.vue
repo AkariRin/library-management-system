@@ -144,11 +144,21 @@
     </v-snackbar>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, computed } from 'vue'
-import { useUserdataStore } from '@/stores/userdata.js'
+import { useUserdataStore } from '@/stores/userdata'
 import { useRouter } from 'vue-router'
 import axios from 'axios'
+
+interface AxiosError {
+  response?: { data?: { message?: string } }
+  request?: unknown
+}
+
+interface FormElement {
+  validate: () => Promise<{ valid: boolean }>
+  reset: () => void
+}
 
 const user = useUserdataStore()
 const router = useRouter()
@@ -171,34 +181,34 @@ const snackbar = ref(false)
 const snackbarText = ref('')
 const snackbarColor = ref('success')
 
-const usernameFormRef = ref(null)
-const passwordFormRef = ref(null)
-const deleteFormRef = ref(null)
+const usernameFormRef = ref<FormElement | null>(null)
+const passwordFormRef = ref<FormElement | null>(null)
+const deleteFormRef = ref<FormElement | null>(null)
 
 const nameRules = [
-  v => !!v || 'Display name cannot be empty',
-  v => (v && v.length >= 1 && v.length <= 50) || 'Display name must be between 1-50 characters'
+  (v: string) => !!v || 'Display name cannot be empty',
+  (v: string) => (v && v.length >= 1 && v.length <= 50) || 'Display name must be between 1-50 characters'
 ]
 
 const passwordRequiredRules = [
-  v => !!v || 'Current password cannot be empty'
+  (v: string) => !!v || 'Current password cannot be empty'
 ]
 
 const passwordRules = [
-  v => !!v || 'Password cannot be empty',
-  v => (v && v.length >= 4 && v.length <= 32) || 'Password must be between 4-32 characters'
+  (v: string) => !!v || 'Password cannot be empty',
+  (v: string) => (v && v.length >= 4 && v.length <= 32) || 'Password must be between 4-32 characters'
 ]
 
 const confirmPasswordRules = [
-  v => v === newPassword.value || 'The passwords entered twice do not match'
+  (v: string) => v === newPassword.value || 'The passwords entered twice do not match'
 ]
 
 const usernameMatchRules = [
-  v => v === id.value || 'Username does not match'
+  (v: string) => v === id.value || 'Username does not match'
 ]
 
 const openUsernameDialog = () => {
-  newUsername.value = username.value
+  newUsername.value = username.value || ''
   usernameDialog.value = true
 }
 
@@ -237,7 +247,8 @@ const closeDeleteDialog = () => {
 }
 
 const changeUsername = async () => {
-  const { valid } = await usernameFormRef.value.validate()
+  const validator = usernameFormRef.value as FormElement | null
+  const { valid } = validator ? await validator.validate() : { valid: false }
   if (!valid) {
     return
   }
@@ -271,9 +282,10 @@ const changeUsername = async () => {
       snackbarColor.value = 'error'
       snackbar.value = true
     }
-  } catch (error) {
+  } catch (error: unknown) {
+    const axiosError = error as AxiosError
     console.error('Change name error:', error)
-    snackbarText.value = error.response?.data?.message || 'Update failed, please try again'
+    snackbarText.value = axiosError.response?.data?.message || 'Update failed, please try again'
     snackbarColor.value = 'error'
     snackbar.value = true
   } finally {
@@ -282,7 +294,8 @@ const changeUsername = async () => {
 }
 
 const changePassword = async () => {
-  const { valid } = await passwordFormRef.value.validate()
+  const validator = passwordFormRef.value as FormElement | null
+  const { valid } = validator ? await validator.validate() : { valid: false }
   if (!valid) {
     return
   }
@@ -316,9 +329,10 @@ const changePassword = async () => {
       snackbarColor.value = 'error'
       snackbar.value = true
     }
-  } catch (error) {
+  } catch (error: unknown) {
+    const axiosError = error as AxiosError
     console.error('Change password error:', error)
-    snackbarText.value = error.response?.data?.message || 'Update failed, please try again'
+    snackbarText.value = axiosError.response?.data?.message || 'Update failed, please try again'
     snackbarColor.value = 'error'
     snackbar.value = true
   } finally {
@@ -327,7 +341,8 @@ const changePassword = async () => {
 }
 
 const deleteAccount = async () => {
-  const { valid } = await deleteFormRef.value.validate()
+  const validator = deleteFormRef.value as FormElement | null
+  const { valid } = validator ? await validator.validate() : { valid: false }
   if (!valid) {
     return
   }
@@ -358,9 +373,10 @@ const deleteAccount = async () => {
       snackbarColor.value = 'error'
       snackbar.value = true
     }
-  } catch (error) {
+  } catch (error: unknown) {
+    const axiosError = error as AxiosError
     console.error('Delete account error:', error)
-    snackbarText.value = error.response?.data?.message || 'Delete failed, please try again'
+    snackbarText.value = axiosError.response?.data?.message || 'Delete failed, please try again'
     snackbarColor.value = 'error'
     snackbar.value = true
   } finally {

@@ -67,11 +67,16 @@
   </v-container>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import { useUserdataStore } from '@/stores/userdata.js'
+import { useUserdataStore } from '@/stores/userdata'
 import axios from 'axios'
+
+interface AxiosError {
+  response?: { data?: { message?: string } }
+  request?: unknown
+}
 
 const router = useRouter()
 const route = useRoute()
@@ -81,22 +86,23 @@ const username = ref('')
 const password = ref('')
 const showPassword = ref(false)
 const loading = ref(false)
-const formRef = ref(null)
+const formRef = ref<HTMLFormElement | null>(null)
 const snackbar = ref(false)
 const snackbarText = ref('')
 const snackbarColor = ref('success')
 
 const usernameRules = [
-  v => !!v || 'Username cannot be empty',
-  v => (v && v.length >= 2 && v.length <= 16) || 'Username must be between 2-16 characters'
+  (v: string) => !!v || 'Username cannot be empty',
+  (v: string) => (v && v.length >= 2 && v.length <= 16) || 'Username must be between 2-16 characters'
 ]
 const passwordRules = [
-  v => !!v || 'Password cannot be empty',
-  v => (v && v.length >= 4 && v.length <= 32) || 'Password must be between 4-32 characters'
+  (v: string) => !!v || 'Password cannot be empty',
+  (v: string) => (v && v.length >= 4 && v.length <= 32) || 'Password must be between 4-32 characters'
 ]
 
 const handleLogin = async () => {
-  const { valid } = await formRef.value.validate()
+  const validator = formRef.value as unknown as { validate: () => Promise<{ valid: boolean }> }
+  const { valid } = validator ? await validator.validate() : { valid: false }
   if (!valid) {
     return
   }
@@ -117,23 +123,23 @@ const handleLogin = async () => {
       snackbarColor.value = 'success'
       snackbar.value = true
 
-      // 登录成功后跳转到redirect参数指定的页面，如果没有则跳转到首页
       const redirectPath = route.query.redirect || '/'
       setTimeout(() => {
-        router.push(redirectPath)
+        router.push(redirectPath as string)
       }, 2000)
     } else {
       snackbarText.value = response.data.message || 'Login failed'
       snackbarColor.value = 'error'
       snackbar.value = true
     }
-  } catch (error) {
+  } catch (error: unknown) {
+    const axiosError = error as AxiosError
     console.error('Login error:', error)
 
-    if (error.response) {
-      snackbarText.value = error.response.data?.message || 'Invalid username or password'
+    if (axiosError.response) {
+      snackbarText.value = axiosError.response.data?.message || 'Invalid username or password'
       snackbarColor.value = 'error'
-    } else if (error.request) {
+    } else if (axiosError.request) {
       snackbarText.value = 'Unable to connect to server'
       snackbarColor.value = 'error'
     } else {
@@ -146,3 +152,4 @@ const handleLogin = async () => {
   }
 }
 </script>
+

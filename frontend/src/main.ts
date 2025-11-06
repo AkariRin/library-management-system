@@ -10,13 +10,15 @@ import '@mdi/font/css/materialdesignicons.css'
 import 'unfonts.css'
 
 import App from './App.vue'
-import router from './router/index.js'
+import router from './router'
 
-createApp(App)
-  .use(createPinia().use(piniaPluginPersistedstate))
-  .use(router)
-  .use(createVuetify({
-    components,
-    directives,
-    }))
-  .mount('#app')
+const app = createApp(App)
+
+app.use(createPinia().use(piniaPluginPersistedstate))
+app.use(router)
+app.use(createVuetify({
+  components,
+  directives,
+}))
+
+app.mount('#app')

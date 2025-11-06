@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import { useUserdataStore } from '@/stores/userdata.js'
+import { useUserdataStore } from '@/stores/userdata'
 
 import loginView from '@/views/loginView.vue'
 import registerView from '@/views/registerView.vue'
@@ -46,10 +46,11 @@ router.beforeEach((to, from, next) => {
 // 全局后置路由守卫，设置页面标题
 router.afterEach((to) => {
   if (to.name) {
-    document.title = `${to.name} | Personal Finance Tracker`
+    document.title = `${String(to.name)} | Personal Finance Tracker`
   } else {
     document.title = 'Personal Finance Tracker'
   }
 })
 
 export default router
+

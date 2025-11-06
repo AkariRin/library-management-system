@@ -92,7 +92,7 @@
   </v-app>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { computed, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useUserdataStore } from '@/stores/userdata'
@@ -101,7 +101,7 @@ const route = useRoute()
 const router = useRouter()
 
 const user = useUserdataStore()
-const activeTab = ref(null)
+const activeTab = ref<string | symbol | undefined | null>(null)
 const logoutDialog = ref(false)
 const snackbar = ref(false)
 const snackbarText = ref('')
@@ -193,3 +193,4 @@ watch(
   border: 1px solid rgba(255, 255, 255, 0.3) !important;
 }
 </style>
+

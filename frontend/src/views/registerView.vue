@@ -87,10 +87,15 @@
   </v-container>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import axios from 'axios'
+
+interface AxiosError {
+  response?: { data?: { message?: string } }
+  request?: unknown
+}
 
 const router = useRouter()
 
@@ -101,30 +106,31 @@ const confirmPassword = ref('')
 const showPassword = ref(false)
 const showConfirmPassword = ref(false)
 const loading = ref(false)
-const formRef = ref(null)
+const formRef = ref<HTMLFormElement | null>(null)
 
 const snackbar = ref(false)
 const snackbarText = ref('')
 const snackbarColor = ref('success')
 
 const usernameRules = [
-  v => !!v || 'Username cannot be empty',
-  v => (v && v.length >= 2 && v.length <= 16) || 'Username must be between 2-16 characters'
+  (v: string) => !!v || 'Username cannot be empty',
+  (v: string) => (v && v.length >= 2 && v.length <= 16) || 'Username must be between 2-16 characters'
 ]
 const nameRules = [
-  v => !!v || 'Display name cannot be empty',
-  v => (v && v.length >= 1 && v.length <= 50) || 'Display name must be between 1-50 characters'
+  (v: string) => !!v || 'Display name cannot be empty',
+  (v: string) => (v && v.length >= 1 && v.length <= 50) || 'Display name must be between 1-50 characters'
 ]
 const passwordRules = [
-  v => !!v || 'Password cannot be empty',
-  v => (v && v.length >= 4 && v.length <= 32) || 'Password must be between 4-32 characters'
+  (v: string) => !!v || 'Password cannot be empty',
+  (v: string) => (v && v.length >= 4 && v.length <= 32) || 'Password must be between 4-32 characters'
 ]
 const confirmPasswordRules = [
-  v => v === password.value || 'The passwords entered twice do not match'
+  (v: string) => v === password.value || 'The passwords entered twice do not match'
 ]
 
 const handleRegister = async () => {
-  const { valid } = await formRef.value.validate()
+  const validator = formRef.value as unknown as { validate: () => Promise<{ valid: boolean }> }
+  const { valid } = validator ? await validator.validate() : { valid: false }
   if (!valid) {
     return
   }
@@ -150,11 +156,12 @@ const handleRegister = async () => {
       snackbarColor.value = 'error'
       snackbar.value = true
     }
-  } catch (error) {
-    if (error.response) {
-      snackbarText.value = error.response.data?.message || 'Registration failed'
+  } catch (error: unknown) {
+    const axiosError = error as AxiosError
+    if (axiosError.response) {
+      snackbarText.value = axiosError.response.data?.message || 'Registration failed'
       snackbarColor.value = 'error'
-    } else if (error.request) {
+    } else if (axiosError.request) {
       snackbarText.value = 'Unable to connect to server'
       snackbarColor.value = 'error'
     } else {
@@ -167,3 +174,4 @@ const handleRegister = async () => {
   }
 }
 </script>
+
