@@ -125,26 +125,5 @@ public class AuthService {
             session.invalidate();
         }
     }
-
-    /**
-     * 获取当前登录用户信息
-     */
-    public AuthResponse getCurrentUser() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        if (authentication == null || !authentication.isAuthenticated() ||
-            authentication.getPrincipal().equals("anonymousUser")) {
-            return null;
-        }
-
-        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-        User user = userDetails.getUser();
-
-        return new AuthResponse(
-                user.getUuid(),
-                user.getUsername(),
-                user.getAdmin()
-        );
-    }
 }
 

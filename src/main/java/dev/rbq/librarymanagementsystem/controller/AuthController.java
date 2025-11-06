@@ -81,25 +81,5 @@ public class AuthController {
                     .body(ApiResponse.error("登出失败：" + e.getMessage()));
         }
     }
-
-    /**
-     * 获取当前登录用户信息
-     */
-    @GetMapping("/me")
-    public ResponseEntity<ApiResponse<AuthResponse>> getCurrentUser() {
-        try {
-            AuthResponse response = authService.getCurrentUser();
-            if (response == null) {
-                return ResponseEntity
-                        .status(HttpStatus.UNAUTHORIZED)
-                        .body(ApiResponse.error("未登录"));
-            }
-            return ResponseEntity.ok(ApiResponse.success("获取用户信息成功", response));
-        } catch (Exception e) {
-            return ResponseEntity
-                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(ApiResponse.error("获取用户信息失败：" + e.getMessage()));
-        }
-    }
 }
 
