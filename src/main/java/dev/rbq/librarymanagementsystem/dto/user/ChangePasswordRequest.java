@@ -8,6 +8,9 @@ import jakarta.validation.constraints.Size;
  */
 public class ChangePasswordRequest {
 
+    @NotBlank(message = "用户UUID不能为空")
+    private String userUuid;
+
     @NotBlank(message = "旧密码不能为空")
     private String oldPassword;
 
@@ -19,12 +22,21 @@ public class ChangePasswordRequest {
     public ChangePasswordRequest() {
     }
 
-    public ChangePasswordRequest(String oldPassword, String newPassword) {
+    public ChangePasswordRequest(String userUuid, String oldPassword, String newPassword) {
+        this.userUuid = userUuid;
         this.oldPassword = oldPassword;
         this.newPassword = newPassword;
     }
 
     // Getters and Setters
+    public String getUserUuid() {
+        return userUuid;
+    }
+
+    public void setUserUuid(String userUuid) {
+        this.userUuid = userUuid;
+    }
+
     public String getOldPassword() {
         return oldPassword;
     }

@@ -49,24 +49,23 @@ public class UserService {
 
     /**
      * 修改密码
-     * @param userUuid 用户UUID
      * @param request 修改密码请求
      * @throws IllegalArgumentException 如果用户不存在或旧密码错误
      */
     @Transactional
-    public void changePassword(String userUuid, ChangePasswordRequest request) {
+    public void changePassword(ChangePasswordRequest request) {
         // 获取当前登录用户
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
         User currentUser = userDetails.getUser();
 
         // 验证用户只能修改自己的密码
-        if (!currentUser.getUuid().equals(userUuid)) {
+        if (!currentUser.getUuid().equals(request.getUserUuid())) {
             throw new SecurityException("无权修改其他用户的密码");
         }
 
         // 查找用户
-        User user = userRepository.findById(userUuid)
+        User user = userRepository.findById(request.getUserUuid())
                 .orElseThrow(() -> new IllegalArgumentException("用户不存在"));
 
         // 验证旧密码
@@ -86,24 +85,23 @@ public class UserService {
 
     /**
      * 修改用户名
-     * @param userUuid 用户UUID
      * @param request 修改用户名请求
      * @throws IllegalArgumentException 如果用户不存在或新用户名已被使用
      */
     @Transactional
-    public AuthResponse changeUsername(String userUuid, ChangeUsernameRequest request) {
+    public AuthResponse changeUsername(ChangeUsernameRequest request) {
         // 获取当前登录用户
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
         User currentUser = userDetails.getUser();
 
         // 验证用户只能修改自己的用户名
-        if (!currentUser.getUuid().equals(userUuid)) {
+        if (!currentUser.getUuid().equals(request.getUserUuid())) {
             throw new SecurityException("无权修改其他用户的用户名");
         }
 
         // 查找用户
-        User user = userRepository.findById(userUuid)
+        User user = userRepository.findById(request.getUserUuid())
                 .orElseThrow(() -> new IllegalArgumentException("用户不存在"));
 
         // 验证新用户名不能与旧用户名相同

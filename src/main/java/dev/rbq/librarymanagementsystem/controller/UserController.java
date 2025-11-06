@@ -44,15 +44,13 @@ public class UserController {
 
     /**
      * 修改密码
-     * @param userUuid 用户UUID
      * @param request 修改密码请求
      */
-    @PutMapping("/{userUuid}/password")
+    @PostMapping("/changepass")
     public ResponseEntity<ApiResponse<Void>> changePassword(
-            @PathVariable String userUuid,
             @Valid @RequestBody ChangePasswordRequest request) {
         try {
-            userService.changePassword(userUuid, request);
+            userService.changePassword(request);
             return ResponseEntity.ok(ApiResponse.success("密码修改成功", null));
         } catch (SecurityException e) {
             return ResponseEntity
@@ -71,15 +69,13 @@ public class UserController {
 
     /**
      * 修改用户名
-     * @param userUuid 用户UUID
      * @param request 修改用户名请求
      */
-    @PutMapping("/{userUuid}/username")
+    @PostMapping("/changename")
     public ResponseEntity<ApiResponse<AuthResponse>> changeUsername(
-            @PathVariable String userUuid,
             @Valid @RequestBody ChangeUsernameRequest request) {
         try {
-            AuthResponse response = userService.changeUsername(userUuid, request);
+            AuthResponse response = userService.changeUsername(request);
             return ResponseEntity.ok(ApiResponse.success("用户名修改成功", response));
         } catch (SecurityException e) {
             return ResponseEntity

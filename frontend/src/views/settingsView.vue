@@ -245,9 +245,12 @@ const changeUsername = async () => {
   loading.value = true
 
   try {
-    const response = await axios.put(
-      '/api/user/name',
-      { name: newUsername.value },
+    const response = await axios.post(
+      '/api/user/changename',
+      {
+        userUuid: user.id,
+        newUsername: newUsername.value
+      },
       {
         headers: {
           'Authorization': `Bearer ${user.token}`
@@ -256,7 +259,7 @@ const changeUsername = async () => {
     )
 
     if (response.data.success) {
-      user.updateName(response.data.data)
+      user.updateName(response.data.data.username)
       snackbarText.value = 'Name updated successfully'
       snackbarColor.value = 'success'
       snackbar.value = true
@@ -287,10 +290,11 @@ const changePassword = async () => {
   loading.value = true
 
   try {
-    const response = await axios.put(
-      '/api/user/password',
+    const response = await axios.post(
+      '/api/user/changepass',
       {
-        currentPassword: currentPassword.value,
+        userUuid: user.id,
+        oldPassword: currentPassword.value,
         newPassword: newPassword.value
       },
       {
