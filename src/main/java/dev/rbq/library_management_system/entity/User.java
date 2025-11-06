@@ -20,7 +20,7 @@ public class User implements Serializable {
 
     @NotBlank(message = "用户名不能为空")
     @Size(max = 50, message = "用户名长度不能超过50个字符")
-    @Column(name = "username", length = 50, nullable = false)
+    @Column(name = "username", length = 50, nullable = false, unique = true)
     private String username;
 
     @NotBlank(message = "昵称不能为空")
