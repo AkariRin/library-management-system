@@ -2,6 +2,7 @@ package dev.rbq.library_management_system.controller;
 
 import dev.rbq.library_management_system.dto.ApiResponse;
 import dev.rbq.library_management_system.dto.auth.AuthResponse;
+import dev.rbq.library_management_system.dto.user.ChangeDisplayNameRequest;
 import dev.rbq.library_management_system.dto.user.ChangePasswordRequest;
 import dev.rbq.library_management_system.dto.user.ChangeUsernameRequest;
 import dev.rbq.library_management_system.service.UserService;
@@ -46,7 +47,7 @@ public class UserController {
      * 修改密码
      * @param request 修改密码请求
      */
-    @PostMapping("/changepass")
+    @PostMapping("/change-pass")
     public ResponseEntity<ApiResponse<Void>> changePassword(
             @Valid @RequestBody ChangePasswordRequest request) {
         try {
@@ -71,7 +72,7 @@ public class UserController {
      * 修改用户名
      * @param request 修改用户名请求
      */
-    @PostMapping("/changename")
+    @PostMapping("/change-username")
     public ResponseEntity<ApiResponse<AuthResponse>> changeUsername(
             @Valid @RequestBody ChangeUsernameRequest request) {
         try {
@@ -91,5 +92,29 @@ public class UserController {
                     .body(ApiResponse.error("用户名修改失败：" + e.getMessage()));
         }
     }
-}
 
+    /**
+     * 修改昵称
+     * @param request 修改昵称请求
+     */
+    @PostMapping("/change-name")
+    public ResponseEntity<ApiResponse<AuthResponse>> changeDisplayName(
+            @Valid @RequestBody ChangeDisplayNameRequest request) {
+        try {
+            AuthResponse response = userService.changeDisplayName(request);
+            return ResponseEntity.ok(ApiResponse.success("昵称修改成功", response));
+        } catch (SecurityException e) {
+            return ResponseEntity
+                    .status(HttpStatus.FORBIDDEN)
+                    .body(ApiResponse.error(e.getMessage()));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(ApiResponse.error(e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(ApiResponse.error("昵称修改失败：" + e.getMessage()));
+        }
+    }
+}

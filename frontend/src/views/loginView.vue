@@ -124,9 +124,9 @@ const handleLogin = async () => {
     })
 
     if (response.data.success && response.data.data) {
-      const { uuid, username: userName, admin } = response.data.data
+      const { uuid, username: userName, name, admin } = response.data.data
 
-      user.login(uuid, userName, admin)
+      user.login(uuid, userName, name, admin)
 
       snackbarText.value = 'Login successful!'
       snackbarColor.value = 'success'

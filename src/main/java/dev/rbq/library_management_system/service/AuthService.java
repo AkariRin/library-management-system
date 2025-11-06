@@ -52,6 +52,7 @@ public class AuthService {
         User user = new User();
         user.setUuid(UUID.randomUUID().toString());
         user.setUsername(request.getUsername());
+        user.setName(request.getName());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setAdmin(false); // 默认为普通用户
 
@@ -61,6 +62,7 @@ public class AuthService {
         return new AuthResponse(
                 user.getUuid(),
                 user.getUsername(),
+                user.getName(),
                 user.getAdmin()
         );
     }
@@ -104,6 +106,7 @@ public class AuthService {
             return new AuthResponse(
                     user.getUuid(),
                     user.getUsername(),
+                    user.getName(),
                     user.getAdmin()
             );
 

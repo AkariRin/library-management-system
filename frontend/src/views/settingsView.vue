@@ -13,6 +13,10 @@
         <div class="text-subtitle-1 text-grey-darken-2" style="width: 120px;">Username</div>
         <div class="text-h5 text-grey-darken-3">{{ username }}</div>
       </div>
+      <div class="d-flex align-center mb-10">
+        <div class="text-subtitle-1 text-grey-darken-2" style="width: 120px;">Display Name</div>
+        <div class="text-h5 text-grey-darken-3">{{ displayName }}</div>
+      </div>
       <div class="d-flex align-center">
         <div class="text-subtitle-1 text-grey-darken-2" style="width: 120px;">Role</div>
         <div class="text-h5 text-grey-darken-3">
@@ -26,6 +30,9 @@
     <v-card-actions class="d-flex my-8 ga-6">
       <v-btn color="primary" variant="elevated" prepend-icon="mdi-account-edit" @click="openUsernameDialog">
         Change Username
+      </v-btn>
+      <v-btn color="info" variant="elevated" prepend-icon="mdi-card-account-details-outline" @click="openDisplayNameDialog">
+        Change Display Name
       </v-btn>
       <v-btn color="warning" variant="elevated" prepend-icon="mdi-lock-reset" @click="openPasswordDialog">
         Change Password
@@ -54,6 +61,29 @@
           <v-spacer></v-spacer>
           <v-btn color="grey" variant="text" @click="closeUsernameDialog" :disabled="loading">Cancel</v-btn>
           <v-btn color="primary" variant="elevated" @click="changeUsername" :loading="loading">Confirm</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <v-dialog v-model="displayNameDialog" max-width="500px">
+      <v-card>
+        <v-card-title class="text-h5">Change Display Name</v-card-title>
+        <v-card-text>
+          <v-form ref="displayNameFormRef">
+            <v-text-field
+              v-model="newDisplayName"
+              label="New Display Name"
+              variant="underlined"
+              prepend-icon="mdi-card-account-details-outline"
+              :rules="displayNameRules"
+              :disabled="loading"
+            ></v-text-field>
+          </v-form>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="grey" variant="text" @click="closeDisplayNameDialog" :disabled="loading">Cancel</v-btn>
+          <v-btn color="info" variant="elevated" @click="changeDisplayName" :loading="loading">Confirm</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -141,12 +171,15 @@ const router = useRouter()
 
 const uuid = computed(() => user.uuid)
 const username = computed(() => user.username)
+const displayName = computed(() => user.name)
 const isAdmin = computed(() => user.admin)
 
 const usernameDialog = ref(false)
+const displayNameDialog = ref(false)
 const passwordDialog = ref(false)
 
 const newUsername = ref('')
+const newDisplayName = ref('')
 const currentPassword = ref('')
 const newPassword = ref('')
 const confirmPassword = ref('')
@@ -157,11 +190,17 @@ const snackbarText = ref('')
 const snackbarColor = ref('success')
 
 const usernameFormRef = ref<FormElement | null>(null)
+const displayNameFormRef = ref<FormElement | null>(null)
 const passwordFormRef = ref<FormElement | null>(null)
 
 const nameRules = [
   (v: string) => !!v || 'Username cannot be empty',
   (v: string) => (v && v.length >= 3 && v.length <= 50) || 'Username must be between 3-50 characters'
+]
+
+const displayNameRules = [
+  (v: string) => !!v || 'Display name cannot be empty',
+  (v: string) => (v && v.length >= 1 && v.length <= 12) || 'Display name must be between 1-12 characters'
 ]
 
 const passwordRequiredRules = [
@@ -190,6 +229,19 @@ const closeUsernameDialog = () => {
   }
 }
 
+const openDisplayNameDialog = () => {
+  newDisplayName.value = displayName.value || ''
+  displayNameDialog.value = true
+}
+
+const closeDisplayNameDialog = () => {
+  displayNameDialog.value = false
+  newDisplayName.value = ''
+  if (displayNameFormRef.value) {
+    displayNameFormRef.value.reset()
+  }
+}
+
 const openPasswordDialog = () => {
   passwordDialog.value = true
 }
@@ -215,7 +267,7 @@ const changeUsername = async () => {
 
   try {
     const response = await axios.post(
-      '/api/user/changename',
+      '/api/user/change-username',
       {
         userUuid: user.uuid,
         newUsername: newUsername.value
@@ -246,6 +298,48 @@ const changeUsername = async () => {
   }
 }
 
+const changeDisplayName = async () => {
+  const validator = displayNameFormRef.value as FormElement | null
+  const { valid } = validator ? await validator.validate() : { valid: false }
+  if (!valid) {
+    return
+  }
+
+  loading.value = true
+
+  try {
+    const response = await axios.post(
+      '/api/user/change-name',
+      {
+        userUuid: user.uuid,
+        newName: newDisplayName.value
+      }
+    )
+
+    if (response.data.success && response.data.data) {
+      user.updateName(response.data.data.name)
+      snackbarText.value = 'Display name updated successfully'
+      snackbarColor.value = 'success'
+      snackbar.value = true
+      setTimeout(() => {
+        closeDisplayNameDialog()
+      }, 1000)
+    } else {
+      snackbarText.value = response.data.message || 'Update failed'
+      snackbarColor.value = 'error'
+      snackbar.value = true
+    }
+  } catch (error: unknown) {
+    const axiosError = error as AxiosError
+    console.error('Change display name error:', error)
+    snackbarText.value = axiosError.response?.data?.message || 'Update failed, please try again'
+    snackbarColor.value = 'error'
+    snackbar.value = true
+  } finally {
+    loading.value = false
+  }
+}
+
 const changePassword = async () => {
   const validator = passwordFormRef.value as FormElement | null
   const { valid } = validator ? await validator.validate() : { valid: false }
@@ -257,7 +351,7 @@ const changePassword = async () => {
 
   try {
     const response = await axios.post(
-      '/api/user/changepass',
+      '/api/user/change-pass',
       {
         userUuid: user.uuid,
         oldPassword: currentPassword.value,

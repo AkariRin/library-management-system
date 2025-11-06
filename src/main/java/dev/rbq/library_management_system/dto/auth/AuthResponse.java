@@ -7,15 +7,17 @@ public class AuthResponse {
 
     private String uuid;
     private String username;
+    private String name;
     private Boolean admin;
 
     // Constructors
     public AuthResponse() {
     }
 
-    public AuthResponse(String uuid, String username, Boolean admin) {
+    public AuthResponse(String uuid, String username, String name, Boolean admin) {
         this.uuid = uuid;
         this.username = username;
+        this.name = name;
         this.admin = admin;
     }
 
@@ -34,6 +36,14 @@ public class AuthResponse {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public Boolean getAdmin() {

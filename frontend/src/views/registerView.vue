@@ -91,6 +91,7 @@ interface AxiosError {
 const router = useRouter()
 
 const username = ref('')
+const name = ref('')
 const password = ref('')
 const confirmPassword = ref('')
 const showPassword = ref(false)
@@ -105,6 +106,10 @@ const snackbarColor = ref('success')
 const usernameRules = [
   (v: string) => !!v || 'Username cannot be empty',
   (v: string) => (v && v.length >= 3 && v.length <= 50) || 'Username must be between 3-50 characters'
+]
+const nameRules = [
+  (v: string) => !!v || 'Display name cannot be empty',
+  (v: string) => (v && v.length >= 1 && v.length <= 12) || 'Display name must be between 1-12 characters'
 ]
 const passwordRules = [
   (v: string) => !!v || 'Password cannot be empty',
@@ -125,6 +130,7 @@ const handleRegister = async () => {
   try {
     const response = await axios.post('/api/auth/register', {
       username: username.value,
+      name: name.value,
       password: password.value
     })
 

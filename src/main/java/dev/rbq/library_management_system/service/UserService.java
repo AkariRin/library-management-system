@@ -1,6 +1,7 @@
 package dev.rbq.library_management_system.service;
 
 import dev.rbq.library_management_system.dto.auth.AuthResponse;
+import dev.rbq.library_management_system.dto.user.ChangeDisplayNameRequest;
 import dev.rbq.library_management_system.dto.user.ChangePasswordRequest;
 import dev.rbq.library_management_system.dto.user.ChangeUsernameRequest;
 import dev.rbq.library_management_system.entity.User;
@@ -43,6 +44,7 @@ public class UserService {
         return new AuthResponse(
                 user.getUuid(),
                 user.getUsername(),
+                user.getName(),
                 user.getAdmin()
         );
     }
@@ -121,6 +123,45 @@ public class UserService {
         return new AuthResponse(
                 user.getUuid(),
                 user.getUsername(),
+                user.getName(),
+                user.getAdmin()
+        );
+    }
+
+    /**
+     * 修改昵称
+     * @param request 修改昵称请求
+     * @throws IllegalArgumentException 如果用户不存在或新昵称与旧昵称相同
+     */
+    @Transactional
+    public AuthResponse changeDisplayName(ChangeDisplayNameRequest request) {
+        // 获取当前登录用户
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+        User currentUser = userDetails.getUser();
+
+        // 验证用户只能修改自己的昵称
+        if (!currentUser.getUuid().equals(request.getUserUuid())) {
+            throw new SecurityException("无权修改其他用户的昵称");
+        }
+
+        // 查找用户
+        User user = userRepository.findById(request.getUserUuid())
+                .orElseThrow(() -> new IllegalArgumentException("用户不存在"));
+
+        // 验证新昵称不能与旧昵称相同
+        if (user.getName().equals(request.getNewName())) {
+            throw new IllegalArgumentException("新昵称不能与当前昵称相同");
+        }
+
+        // 更新昵称
+        user.setName(request.getNewName());
+        user = userRepository.save(user);
+
+        return new AuthResponse(
+                user.getUuid(),
+                user.getUsername(),
+                user.getName(),
                 user.getAdmin()
         );
     }
