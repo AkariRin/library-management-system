@@ -2,6 +2,7 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '3.5.7'
     id 'io.spring.dependency-management' version '1.1.7'
+    id 'com.github.node-gradle.node' version '7.1.0'
 }
 
 group = 'dev.rbq'
@@ -39,4 +40,45 @@ dependencies {
 
 tasks.named('test') {
     useJUnitPlatform()
+}
+
+// Node.js configuration
+node {
+    version = '22.12.0'
+    pnpmVersion = '9.15.0'
+    download = true
+    workDir = file("${layout.buildDirectory.get().asFile}/nodejs")
+    pnpmWorkDir = file("${layout.buildDirectory.get().asFile}/pnpm")
+    nodeProjectDir = file("${project.projectDir}/frontend")
+}
+
+// Task to build frontend
+tasks.register('buildFrontend', com.github.gradle.node.pnpm.task.PnpmTask) {
+    args = ['run', 'build']
+    dependsOn tasks.pnpmInstall
+    inputs.dir('frontend/src')
+    inputs.dir('frontend/public')
+    inputs.file('frontend/package.json')
+    inputs.file('frontend/pnpm-lock.yaml')
+    inputs.file('frontend/vite.config.js')
+    inputs.file('frontend/index.html')
+    outputs.dir('frontend/dist')
+}
+
+// Task to copy frontend build to resources
+tasks.register('copyFrontend', Copy) {
+    dependsOn buildFrontend
+    from 'frontend/dist'
+    into "${layout.buildDirectory.get().asFile}/resources/main/static"
+}
+
+// Make processResources depend on copyFrontend
+tasks.named('processResources') {
+    dependsOn copyFrontend
+}
+
+// Clean frontend build
+tasks.named('clean') {
+    delete 'frontend/dist'
+    delete 'frontend/node_modules'
 }
