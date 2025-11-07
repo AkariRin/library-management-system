@@ -4,13 +4,19 @@ import { useUserdataStore } from '@/stores/userdata'
 import loginView from '@/views/loginView.vue'
 import registerView from '@/views/registerView.vue'
 import settingsView from '@/views/settingsView.vue'
+import booksView from '@/views/booksView.vue'
+import borrowView from '@/views/borrowView.vue'
+import adminView from '@/views/adminView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
-    { path: '/', redirect: '/settings' },
+    { path: '/', redirect: '/books' },
     { path: '/login', name: 'login', component: loginView, meta: { isPublic: true } },
     { path: '/register', name: 'register', component: registerView, meta: { isPublic: true } },
+    { path: '/books', name: 'Books', component: booksView},
+    { path: '/borrow', name: 'Borrow Records', component: borrowView},
+    { path: '/admin', name: 'Admin', component: adminView, meta: { requireAdmin: true }},
     { path: '/settings', name: 'Settings', component: settingsView},
   ],
 })
@@ -39,8 +45,13 @@ router.beforeEach((to, from, next) => {
       query: { redirect: to.fullPath } // 保存原始路径，登录后可以跳转回来
     })
   } else {
-    // 已登录
-    next()
+    // 已登录，检查是否需要管理员权限
+    if (to.meta.requireAdmin && !userStore.admin) {
+      // 需要管理员权限但用户不是管理员，重定向到首页
+      next('/')
+    } else {
+      next()
+    }
   }
 })
 

@@ -108,7 +108,15 @@ const snackbar = ref(false)
 const snackbarText = ref('')
 const showAppBar = computed(() => !route.meta?.isPublic)
 const navTabs = computed(() => {
-  return router.options.routes.filter(r => !r.meta?.isPublic)
+  return router.options.routes.filter(r => {
+    // 过滤掉公开页面
+    if (r.meta?.isPublic) return false
+    // 如果路由需要管理员权限，只有管理员才能看到
+    if (r.meta?.requireAdmin) {
+      return user.admin
+    }
+    return true
+  })
 })
 
 const logout = () => {
