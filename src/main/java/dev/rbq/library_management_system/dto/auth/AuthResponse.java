@@ -54,4 +54,3 @@ public class AuthResponse {
         this.admin = admin;
     }
 }
-

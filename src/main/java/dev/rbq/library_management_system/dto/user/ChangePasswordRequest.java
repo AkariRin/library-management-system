@@ -8,14 +8,14 @@ import jakarta.validation.constraints.Size;
  */
 public class ChangePasswordRequest {
 
-    @NotBlank(message = "用户UUID不能为空")
+    @NotBlank(message = "The user UUID cannot be empty")
     private String userUuid;
 
-    @NotBlank(message = "旧密码不能为空")
+    @NotBlank(message = "The old password cannot be left blank")
     private String oldPassword;
 
-    @NotBlank(message = "新密码不能为空")
-    @Size(min = 6, max = 50, message = "新密码长度必须在6-50个字符之间")
+    @NotBlank(message = "The new password cannot be left blank")
+    @Size(min = 6, max = 50, message = "The new password must be between 6 and 50 characters in length")
     private String newPassword;
 
     // Constructors
@@ -53,4 +53,3 @@ public class ChangePasswordRequest {
         this.newPassword = newPassword;
     }
 }
-

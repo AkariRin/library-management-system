@@ -33,13 +33,13 @@ public class UserController {
             if (response == null) {
                 return ResponseEntity
                         .status(HttpStatus.UNAUTHORIZED)
-                        .body(ApiResponse.error("未登录"));
+                        .body(ApiResponse.error("Unauthorized"));
             }
-            return ResponseEntity.ok(ApiResponse.success("获取用户信息成功", response));
+            return ResponseEntity.ok(ApiResponse.success("User information retrieved successfully", response));
         } catch (Exception e) {
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(ApiResponse.error("获取用户信息失败：" + e.getMessage()));
+                    .body(ApiResponse.error("Failed to retrieve user information:" + e.getMessage()));
         }
     }
 
@@ -52,7 +52,7 @@ public class UserController {
             @Valid @RequestBody ChangePasswordRequest request) {
         try {
             userService.changePassword(request);
-            return ResponseEntity.ok(ApiResponse.success("密码修改成功", null));
+            return ResponseEntity.ok(ApiResponse.success("Password changed successfully", null));
         } catch (SecurityException e) {
             return ResponseEntity
                     .status(HttpStatus.FORBIDDEN)
@@ -64,7 +64,7 @@ public class UserController {
         } catch (Exception e) {
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(ApiResponse.error("密码修改失败：" + e.getMessage()));
+                    .body(ApiResponse.error("Password change failed:" + e.getMessage()));
         }
     }
 
@@ -77,7 +77,7 @@ public class UserController {
             @Valid @RequestBody ChangeUsernameRequest request) {
         try {
             AuthResponse response = userService.changeUsername(request);
-            return ResponseEntity.ok(ApiResponse.success("用户名修改成功", response));
+            return ResponseEntity.ok(ApiResponse.success("Username changed successfully", response));
         } catch (SecurityException e) {
             return ResponseEntity
                     .status(HttpStatus.FORBIDDEN)
@@ -89,7 +89,7 @@ public class UserController {
         } catch (Exception e) {
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(ApiResponse.error("用户名修改失败：" + e.getMessage()));
+                    .body(ApiResponse.error("Username modification failed:" + e.getMessage()));
         }
     }
 
@@ -102,7 +102,7 @@ public class UserController {
             @Valid @RequestBody ChangeDisplayNameRequest request) {
         try {
             AuthResponse response = userService.changeDisplayName(request);
-            return ResponseEntity.ok(ApiResponse.success("昵称修改成功", response));
+            return ResponseEntity.ok(ApiResponse.success("Name changed successfully", response));
         } catch (SecurityException e) {
             return ResponseEntity
                     .status(HttpStatus.FORBIDDEN)
@@ -114,7 +114,7 @@ public class UserController {
         } catch (Exception e) {
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(ApiResponse.error("昵称修改失败：" + e.getMessage()));
+                    .body(ApiResponse.error("Name modification failed:" + e.getMessage()));
         }
     }
 }

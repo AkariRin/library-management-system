@@ -7,10 +7,10 @@ import jakarta.validation.constraints.NotBlank;
  */
 public class LoginRequest {
 
-    @NotBlank(message = "用户名不能为空")
+    @NotBlank(message = "Username cannot be empty")
     private String username;
 
-    @NotBlank(message = "密码不能为空")
+    @NotBlank(message = "Password cannot be empty")
     private String password;
 
     private Boolean rememberMe = false;
@@ -50,4 +50,3 @@ public class LoginRequest {
         this.rememberMe = rememberMe;
     }
 }
-

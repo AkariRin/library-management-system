@@ -8,11 +8,11 @@ import jakarta.validation.constraints.Size;
  */
 public class ChangeDisplayNameRequest {
 
-    @NotBlank(message = "用户UUID不能为空")
+    @NotBlank(message = "The user UUID cannot be empty")
     private String userUuid;
 
-    @NotBlank(message = "新昵称不能为空")
-    @Size(min = 1, max = 12, message = "新昵称长度必须在1-12个字符之间")
+    @NotBlank(message = "The new name cannot be left blank")
+    @Size(min = 1, max = 12, message = "The new nickname must be between 1 and 12 characters in length")
     private String newName;
 
     // Constructors
@@ -41,4 +41,3 @@ public class ChangeDisplayNameRequest {
         this.newName = newName;
     }
 }
-

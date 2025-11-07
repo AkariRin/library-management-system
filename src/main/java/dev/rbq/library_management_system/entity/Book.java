@@ -22,21 +22,21 @@ public class Book implements Serializable {
     @Column(name = "book_id", nullable = false)
     private Integer bookId;
 
-    @Size(max = 20, message = "ISBN长度不能超过20个字符")
+    @Size(max = 20, message = "The ISBN length must not exceed 20 characters")
     @Column(name = "isbn", length = 20, unique = true)
     private String isbn;
 
-    @NotBlank(message = "书名不能为空")
-    @Size(max = 50, message = "书名长度不能超过50个字符")
+    @NotBlank(message = "The book title cannot be left blank")
+    @Size(max = 50, message = "The title length must not exceed 50 characters")
     @Column(name = "title", length = 50, nullable = false)
     private String title;
 
-    @NotBlank(message = "作者不能为空")
-    @Size(max = 50, message = "作者长度不能超过50个字符")
+    @NotBlank(message = "The author cannot be empty")
+    @Size(max = 50, message = "The author's name must not exceed 50 characters")
     @Column(name = "author", length = 50, nullable = false)
     private String author;
 
-    @Size(max = 50, message = "出版社长度不能超过50个字符")
+    @Size(max = 50, message = "The publisher's name must not exceed 50 characters")
     @Column(name = "publisher", length = 50)
     private String publisher;
 
@@ -166,4 +166,3 @@ public class Book implements Serializable {
                 '}';
     }
 }
-

@@ -7,7 +7,7 @@ import jakarta.validation.constraints.NotNull;
  */
 public class BorrowRequest {
 
-    @NotNull(message = "图书副本ID不能为空")
+    @NotNull(message = "The book copy ID cannot be empty")
     private Integer itemId;
 
     // Constructors
@@ -27,4 +27,3 @@ public class BorrowRequest {
         this.itemId = itemId;
     }
 }
-

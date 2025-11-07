@@ -45,7 +45,7 @@ public class AuthService {
     public AuthResponse register(RegisterRequest request) {
         // 检查用户名是否已存在
         if (userRepository.existsByUsername(request.getUsername())) {
-            throw new IllegalArgumentException("用户名已存在");
+            throw new IllegalArgumentException("Username already exists");
         }
 
         // 创建新用户
@@ -90,13 +90,39 @@ public class AuthService {
             HttpSession session = httpRequest.getSession(true);
             session.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, securityContext);
 
-            // 设置 session 超时时间（remember me 功能）
+            // 设置 session 超时时间和 Cookie maxAge（remember me 功能）
             if (Boolean.TRUE.equals(request.getRememberMe())) {
-                // 记住我：7天
-                session.setMaxInactiveInterval(7 * 24 * 60 * 60);
+                // 记住我：1年（永久保存）
+                int oneYearInSeconds = 365 * 24 * 60 * 60;
+                session.setMaxInactiveInterval(oneYearInSeconds);
+
+                // 手动设置 Cookie 的 maxAge 为 1 年
+                // 这样即使浏览器关闭，Cookie 也会保留
+                jakarta.servlet.http.Cookie[] cookies = httpRequest.getCookies();
+                if (cookies != null) {
+                    for (jakarta.servlet.http.Cookie cookie : cookies) {
+                        if ("SESSIONID".equals(cookie.getName())) {
+                            cookie.setMaxAge(oneYearInSeconds);
+                            cookie.setPath("/");
+                            cookie.setHttpOnly(true);
+                            cookie.setSecure(true);
+                            httpResponse.addCookie(cookie);
+                            break;
+                        }
+                    }
+                }
             } else {
-                // 不记住：30分钟（默认）
-                session.setMaxInactiveInterval(30 * 60);
+                // 不记住：使用会话级别 Cookie（浏览器关闭后失效）
+                // Session 在服务器上保留 30 分钟，但 Cookie 在浏览器关闭后删除
+                session.setMaxInactiveInterval(30 * 60); // 30分钟
+
+                // 确保 Cookie 的 maxAge 为 -1（会话级别）
+                jakarta.servlet.http.Cookie sessionCookie = new jakarta.servlet.http.Cookie("SESSIONID", session.getId());
+                sessionCookie.setMaxAge(-1); // -1 表示会话级别，浏览器关闭后删除
+                sessionCookie.setPath("/");
+                sessionCookie.setHttpOnly(true);
+                sessionCookie.setSecure(true);
+                httpResponse.addCookie(sessionCookie);
             }
 
             // 获取用户信息
@@ -111,7 +137,7 @@ public class AuthService {
             );
 
         } catch (BadCredentialsException e) {
-            throw new BadCredentialsException("用户名或密码错误");
+            throw new BadCredentialsException("Incorrect username or password");
         }
     }
 

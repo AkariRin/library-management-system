@@ -28,7 +28,7 @@
               ></v-text-field>
               <v-checkbox
                 v-model="rememberMe"
-                label="Remember me (7 days)"
+                label="Remember me (stay signed in)"
                 color="primary"
                 hide-details
                 class="mb-4"

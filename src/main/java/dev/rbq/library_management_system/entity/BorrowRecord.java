@@ -18,28 +18,28 @@ public class BorrowRecord implements Serializable {
     @Column(name = "record_id", length = 36, nullable = false)
     private String recordId;
 
-    @NotNull(message = "用户UUID不能为空")
+    @NotNull(message = "The user UUID cannot be empty")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_uuid", nullable = false, foreignKey = @ForeignKey(name = "fk_borrow_records_user_uuid"))
     private User user;
 
-    @NotNull(message = "图书副本ID不能为空")
+    @NotNull(message = "The book copy ID cannot be empty")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "item_id", nullable = false, foreignKey = @ForeignKey(name = "fk_borrow_records_item_id"))
     private BookItem bookItem;
 
-    @NotNull(message = "借出日期不能为空")
+    @NotNull(message = "The loan date cannot be empty")
     @Column(name = "borrow_date", nullable = false, columnDefinition = "datetime default CURRENT_TIMESTAMP")
     private LocalDateTime borrowDate;
 
-    @NotNull(message = "应还日期不能为空")
+    @NotNull(message = "The due date cannot be empty")
     @Column(name = "due_date", nullable = false)
     private LocalDateTime dueDate;
 
     @Column(name = "return_date")
     private LocalDateTime returnDate;
 
-    @NotNull(message = "借阅状态不能为空")
+    @NotNull(message = "The borrowing status cannot be empty")
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false, length = 20)
     private BorrowStatus status = BorrowStatus.Checked_Out;
@@ -120,8 +120,8 @@ public class BorrowRecord implements Serializable {
      * 借阅状态枚举
      */
     public enum BorrowStatus {
-        Checked_Out("Checked Out", "已借出"),
-        Returned("Returned", "已归还");
+        Checked_Out("Checked Out", "Checked Out"),
+        Returned("Returned", "Returned");
 
         private final String value;
         private final String description;
@@ -140,4 +140,3 @@ public class BorrowRecord implements Serializable {
         }
     }
 }
-

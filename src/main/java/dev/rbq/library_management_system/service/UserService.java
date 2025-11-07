@@ -63,21 +63,21 @@ public class UserService {
 
         // 验证用户只能修改自己的密码
         if (!currentUser.getUuid().equals(request.getUserUuid())) {
-            throw new SecurityException("无权修改其他用户的密码");
+            throw new SecurityException("You are not authorized to modify other users' passwords");
         }
 
         // 查找用户
         User user = userRepository.findById(request.getUserUuid())
-                .orElseThrow(() -> new IllegalArgumentException("用户不存在"));
+                .orElseThrow(() -> new IllegalArgumentException("User does not exist"));
 
         // 验证旧密码
         if (!passwordEncoder.matches(request.getOldPassword(), user.getPassword())) {
-            throw new BadCredentialsException("旧密码错误");
+            throw new BadCredentialsException("Invalid old password");
         }
 
         // 验证新密码不能与旧密码相同
         if (request.getOldPassword().equals(request.getNewPassword())) {
-            throw new IllegalArgumentException("新密码不能与旧密码相同");
+            throw new IllegalArgumentException("The new password cannot be the same as the old password");
         }
 
         // 更新密码
@@ -99,21 +99,21 @@ public class UserService {
 
         // 验证用户只能修改自己的用户名
         if (!currentUser.getUuid().equals(request.getUserUuid())) {
-            throw new SecurityException("无权修改其他用户的用户名");
+            throw new SecurityException("You are not authorized to modify other users' usernames");
         }
 
         // 查找用户
         User user = userRepository.findById(request.getUserUuid())
-                .orElseThrow(() -> new IllegalArgumentException("用户不存在"));
+                .orElseThrow(() -> new IllegalArgumentException("User does not exist"));
 
         // 验证新用户名不能与旧用户名相同
         if (user.getUsername().equals(request.getNewUsername())) {
-            throw new IllegalArgumentException("新用户名不能与当前用户名相同");
+            throw new IllegalArgumentException("The new username cannot be the same as the current username");
         }
 
         // 检查新用户名是否已被使用
         if (userRepository.existsByUsername(request.getNewUsername())) {
-            throw new IllegalArgumentException("用户名已存在");
+            throw new IllegalArgumentException("Username already exists");
         }
 
         // 更新用户名
@@ -142,16 +142,16 @@ public class UserService {
 
         // 验证用户只能修改自己的昵称
         if (!currentUser.getUuid().equals(request.getUserUuid())) {
-            throw new SecurityException("无权修改其他用户的昵称");
+            throw new SecurityException("You are not authorized to modify other users' name");
         }
 
         // 查找用户
         User user = userRepository.findById(request.getUserUuid())
-                .orElseThrow(() -> new IllegalArgumentException("用户不存在"));
+                .orElseThrow(() -> new IllegalArgumentException("User does not exist"));
 
         // 验证新昵称不能与旧昵称相同
         if (user.getName().equals(request.getNewName())) {
-            throw new IllegalArgumentException("新昵称不能与当前昵称相同");
+            throw new IllegalArgumentException("The new name cannot be the same as the current name");
         }
 
         // 更新昵称

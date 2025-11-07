@@ -93,4 +93,3 @@ public interface BorrowRecordRepository extends JpaRepository<BorrowRecord, Stri
             @Param("endDate") LocalDateTime endDate,
             Pageable pageable);
 }
-

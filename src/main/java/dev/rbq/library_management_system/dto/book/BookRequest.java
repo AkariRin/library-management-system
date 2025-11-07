@@ -10,18 +10,18 @@ import java.time.LocalDate;
  */
 public class BookRequest {
 
-    @Size(max = 20, message = "ISBN长度不能超过20个字符")
+    @Size(max = 20, message = "The ISBN length must not exceed 20 characters")
     private String isbn;
 
-    @NotBlank(message = "书名不能为空")
-    @Size(max = 50, message = "书名长度不能超过50个字符")
+    @NotBlank(message = "The book title cannot be empty")
+    @Size(max = 50, message = "The title length must not exceed 50 characters")
     private String title;
 
-    @NotBlank(message = "作者不能为空")
-    @Size(max = 50, message = "作者长度不能超过50个字符")
+    @NotBlank(message = "The author cannot be empty")
+    @Size(max = 50, message = "The author's name must not exceed 50 characters")
     private String author;
 
-    @Size(max = 50, message = "出版社长度不能超过50个字符")
+    @Size(max = 50, message = "The publisher's name must not exceed 50 characters")
     private String publisher;
 
     private LocalDate publishDate;
@@ -126,4 +126,3 @@ public class BookRequest {
                 '}';
     }
 }
-

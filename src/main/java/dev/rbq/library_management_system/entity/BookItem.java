@@ -22,17 +22,17 @@ public class BookItem implements Serializable {
     @Column(name = "item_id", nullable = false)
     private Integer itemId;
 
-    @NotNull(message = "图书ID不能为空")
+    @NotNull(message = "The book ID cannot be empty")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "book_id", nullable = false, foreignKey = @ForeignKey(name = "fk_book_items_book_id"))
     private Book book;
 
-    @NotBlank(message = "条码号不能为空")
-    @Size(max = 50, message = "条码号长度不能超过50个字符")
+    @NotBlank(message = "The barcode number cannot be empty")
+    @Size(max = 50, message = "The barcode number must not exceed 50 characters in length")
     @Column(name = "barcode", length = 50, nullable = false, unique = true)
     private String barcode;
 
-    @Size(max = 50, message = "馆藏位置长度不能超过50个字符")
+    @Size(max = 50, message = "The length of the collection location cannot exceed 50 characters")
     @Column(name = "location", length = 50)
     private String location;
 
@@ -46,7 +46,7 @@ public class BookItem implements Serializable {
     @Column(name = "acquisition_price", precision = 10, scale = 2)
     private BigDecimal acquisitionPrice;
 
-    @Size(max = 500, message = "备注信息长度不能超过500个字符")
+    @Size(max = 500, message = "The length of the remarks section must not exceed 500 characters")
     @Column(name = "notes", length = 500)
     private String notes;
 
@@ -146,11 +146,11 @@ public class BookItem implements Serializable {
      * 图书副本状态枚举
      */
     public enum BookItemStatus {
-        Available("Available", "可借"),
-        Checked_Out("Checked Out", "已借出"),
-        Lost("Lost", "丢失"),
-        Damaged("Damaged", "损坏"),
-        Withdrawn("Withdrawn", "已下架");
+        Available("Available", "Available"),
+        Checked_Out("Checked Out", "Checked Out"),
+        Lost("Lost", "Lost"),
+        Damaged("Damaged", "Damaged"),
+        Withdrawn("Withdrawn", "Withdrawn");
 
         private final String value;
         private final String description;
@@ -169,4 +169,3 @@ public class BookItem implements Serializable {
         }
     }
 }
-

@@ -33,7 +33,7 @@ public class BookController {
     public ResponseEntity<ApiResponse<BookResponse>> getBookDetail(@PathVariable Integer bookId) {
         try {
             BookResponse response = bookService.getBookDetail(bookId);
-            return ResponseEntity.ok(ApiResponse.success("获取图书详情成功", response));
+            return ResponseEntity.ok(ApiResponse.success("Book details retrieved successfully", response));
         } catch (IllegalArgumentException e) {
             return ResponseEntity
                     .status(HttpStatus.NOT_FOUND)
@@ -41,7 +41,7 @@ public class BookController {
         } catch (Exception e) {
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(ApiResponse.error("获取图书详情失败：" + e.getMessage()));
+                    .body(ApiResponse.error("Failed to retrieve book details:" + e.getMessage()));
         }
     }
 
@@ -70,11 +70,11 @@ public class BookController {
         try {
             PageResponse<BookResponse> response = bookService.getBookList(
                     page, size, title, author, category, sortBy, sortDirection);
-            return ResponseEntity.ok(ApiResponse.success("获取图书列表成功", response));
+            return ResponseEntity.ok(ApiResponse.success("Book list retrieved successfully", response));
         } catch (Exception e) {
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(ApiResponse.error("获取图书列表失败：" + e.getMessage()));
+                    .body(ApiResponse.error("Failed to retrieve book list:" + e.getMessage()));
         }
     }
 
@@ -91,7 +91,7 @@ public class BookController {
             BookResponse response = bookService.addBook(request);
             return ResponseEntity
                     .status(HttpStatus.CREATED)
-                    .body(ApiResponse.success("添加图书成功", response));
+                    .body(ApiResponse.success("Book added successfully", response));
         } catch (IllegalArgumentException e) {
             return ResponseEntity
                     .status(HttpStatus.BAD_REQUEST)
@@ -99,7 +99,7 @@ public class BookController {
         } catch (Exception e) {
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(ApiResponse.error("添加图书失败：" + e.getMessage()));
+                    .body(ApiResponse.error("Failed to add book:" + e.getMessage()));
         }
     }
 
@@ -117,7 +117,7 @@ public class BookController {
             @Valid @RequestBody BookRequest request) {
         try {
             BookResponse response = bookService.updateBook(bookId, request);
-            return ResponseEntity.ok(ApiResponse.success("更新图书成功", response));
+            return ResponseEntity.ok(ApiResponse.success("Book update successful", response));
         } catch (IllegalArgumentException e) {
             return ResponseEntity
                     .status(HttpStatus.BAD_REQUEST)
@@ -125,7 +125,7 @@ public class BookController {
         } catch (Exception e) {
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(ApiResponse.error("更新图书失败：" + e.getMessage()));
+                    .body(ApiResponse.error("Failed to update books:" + e.getMessage()));
         }
     }
 
@@ -140,7 +140,7 @@ public class BookController {
     public ResponseEntity<ApiResponse<Void>> deleteBook(@PathVariable Integer bookId) {
         try {
             bookService.deleteBook(bookId);
-            return ResponseEntity.ok(ApiResponse.success("删除图书成功", null));
+            return ResponseEntity.ok(ApiResponse.success("Book deleted successfully", null));
         } catch (IllegalArgumentException e) {
             return ResponseEntity
                     .status(HttpStatus.NOT_FOUND)
@@ -148,8 +148,7 @@ public class BookController {
         } catch (Exception e) {
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(ApiResponse.error("删除图书失败：" + e.getMessage()));
+                    .body(ApiResponse.error("Failed to delete book:" + e.getMessage()));
         }
     }
 }
-

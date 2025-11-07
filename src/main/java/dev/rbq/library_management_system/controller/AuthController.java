@@ -31,7 +31,7 @@ public class AuthController {
     public ResponseEntity<ApiResponse<AuthResponse>> register(@Valid @RequestBody RegisterRequest request) {
         try {
             AuthResponse response = authService.register(request);
-            return ResponseEntity.ok(ApiResponse.success("注册成功", response));
+            return ResponseEntity.ok(ApiResponse.success("Registration successful", response));
         } catch (IllegalArgumentException e) {
             return ResponseEntity
                     .status(HttpStatus.BAD_REQUEST)
@@ -39,7 +39,7 @@ public class AuthController {
         } catch (Exception e) {
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(ApiResponse.error("注册失败：" + e.getMessage()));
+                    .body(ApiResponse.error("Registration failed:" + e.getMessage()));
         }
     }
 
@@ -53,7 +53,7 @@ public class AuthController {
             HttpServletResponse httpResponse) {
         try {
             AuthResponse response = authService.login(request, httpRequest, httpResponse);
-            return ResponseEntity.ok(ApiResponse.success("登录成功", response));
+            return ResponseEntity.ok(ApiResponse.success("Login successful", response));
         } catch (BadCredentialsException e) {
             return ResponseEntity
                     .status(HttpStatus.UNAUTHORIZED)
@@ -61,7 +61,7 @@ public class AuthController {
         } catch (Exception e) {
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(ApiResponse.error("登录失败：" + e.getMessage()));
+                    .body(ApiResponse.error("Login failed:" + e.getMessage()));
         }
     }
 
@@ -74,12 +74,11 @@ public class AuthController {
             HttpServletResponse response) {
         try {
             authService.logout(request, response);
-            return ResponseEntity.ok(ApiResponse.success("登出成功", null));
+            return ResponseEntity.ok(ApiResponse.success("Logout successful", null));
         } catch (Exception e) {
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(ApiResponse.error("登出失败：" + e.getMessage()));
+                    .body(ApiResponse.error("Logout failed:" + e.getMessage()));
         }
     }
 }
-

@@ -11,14 +11,14 @@ import java.time.LocalDate;
  */
 public class BookItemRequest {
 
-    @NotNull(message = "图书ID不能为空")
+    @NotNull(message = "The book ID cannot be empty")
     private Integer bookId;
 
-    @NotBlank(message = "条码号不能为空")
-    @Size(max = 50, message = "条码号长度不能超过50个字符")
+    @NotBlank(message = "The barcode number cannot be empty")
+    @Size(max = 50, message = "The barcode number must not exceed 50 characters in length")
     private String barcode;
 
-    @Size(max = 50, message = "馆藏位置长度不能超过50个字符")
+    @Size(max = 50, message = "The length of the collection location cannot exceed 50 characters")
     private String location;
 
     private String status; // Available, Checked Out, Lost, Damaged, Withdrawn
@@ -27,7 +27,7 @@ public class BookItemRequest {
 
     private BigDecimal acquisitionPrice;
 
-    @Size(max = 500, message = "备注信息长度不能超过500个字符")
+    @Size(max = 500, message = "The length of the remarks section must not exceed 500 characters")
     private String notes;
 
     // Constructors
@@ -114,4 +114,3 @@ public class BookItemRequest {
                 '}';
     }
 }
-

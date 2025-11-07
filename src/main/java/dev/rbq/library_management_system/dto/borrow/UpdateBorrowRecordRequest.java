@@ -48,4 +48,3 @@ public class UpdateBorrowRecordRequest {
         this.status = status;
     }
 }
-

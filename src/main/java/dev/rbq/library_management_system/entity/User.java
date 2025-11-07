@@ -18,18 +18,18 @@ public class User implements Serializable {
     @Column(name = "uuid", length = 36, nullable = false)
     private String uuid;
 
-    @NotBlank(message = "用户名不能为空")
-    @Size(max = 50, message = "用户名长度不能超过50个字符")
+    @NotBlank(message = "Username cannot be empty")
+    @Size(max = 50, message = "Username length cannot exceed 50 characters")
     @Column(name = "username", length = 50, nullable = false, unique = true)
     private String username;
 
-    @NotBlank(message = "昵称不能为空")
-    @Size(max = 12, message = "昵称长度不能超过12个字符")
+    @NotBlank(message = "Name cannot be left blank")
+    @Size(max = 12, message = "Names must not exceed 12 characters in length")
     @Column(name = "name", length = 12, nullable = false)
     private String name;
 
-    @NotBlank(message = "密码不能为空")
-    @Size(max = 60, message = "密码长度不能超过60个字符")
+    @NotBlank(message = "Password cannot be empty")
+    @Size(max = 60, message = "Password length must not exceed 60 characters")
     @Column(name = "password", length = 60, nullable = false)
     private String password;
 
@@ -89,4 +89,3 @@ public class User implements Serializable {
         this.admin = admin;
     }
 }
-

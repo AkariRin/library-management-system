@@ -81,4 +81,3 @@ public interface BookItemRepository extends JpaRepository<BookItem, Integer> {
             @Param("status") BookItem.BookItemStatus status
     );
 }
-

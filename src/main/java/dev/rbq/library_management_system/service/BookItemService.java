@@ -37,7 +37,7 @@ public class BookItemService {
      */
     public BookItemResponse getBookItemDetail(Integer itemId) {
         BookItem bookItem = bookItemRepository.findById(itemId)
-                .orElseThrow(() -> new IllegalArgumentException("图书副本不存在"));
+                .orElseThrow(() -> new IllegalArgumentException("The book copy does not exist"));
         return convertToResponse(bookItem);
     }
 
@@ -57,7 +57,7 @@ public class BookItemService {
 
         // 验证图书是否存在
         if (!bookRepository.existsById(bookId)) {
-            throw new IllegalArgumentException("图书不存在");
+            throw new IllegalArgumentException("The book does not exist");
         }
 
         // 创建排序对象
@@ -75,7 +75,7 @@ public class BookItemService {
                 BookItem.BookItemStatus itemStatus = parseStatus(status);
                 itemPage = bookItemRepository.findByBookIdAndStatus(bookId, itemStatus, pageable);
             } catch (IllegalArgumentException e) {
-                throw new IllegalArgumentException("无效的副本状态: " + status);
+                throw new IllegalArgumentException("Invalid copy status:" + status);
             }
         } else {
             itemPage = bookItemRepository.findByBookId(bookId, pageable);
@@ -107,11 +107,11 @@ public class BookItemService {
     public BookItemResponse addBookItem(BookItemRequest request) {
         // 验证图书是否存在
         Book book = bookRepository.findById(request.getBookId())
-                .orElseThrow(() -> new IllegalArgumentException("图书不存在"));
+                .orElseThrow(() -> new IllegalArgumentException("The book does not exist"));
 
         // 检查条码号是否已存在
         if (bookItemRepository.existsByBarcode(request.getBarcode())) {
-            throw new IllegalArgumentException("条码号已存在");
+            throw new IllegalArgumentException("The barcode number already exists");
         }
 
         // 创建副本实体
@@ -125,7 +125,7 @@ public class BookItemService {
             try {
                 bookItem.setStatus(parseStatus(request.getStatus()));
             } catch (IllegalArgumentException e) {
-                throw new IllegalArgumentException("无效的副本状态: " + request.getStatus());
+                throw new IllegalArgumentException("Invalid copy status:" + request.getStatus());
             }
         } else {
             bookItem.setStatus(BookItem.BookItemStatus.Available);
@@ -151,19 +151,19 @@ public class BookItemService {
     public BookItemResponse updateBookItem(Integer itemId, BookItemRequest request) {
         // 查找副本
         BookItem bookItem = bookItemRepository.findById(itemId)
-                .orElseThrow(() -> new IllegalArgumentException("图书副本不存在"));
+                .orElseThrow(() -> new IllegalArgumentException("The book copy does not exist"));
 
         // 检查条码号是否已被其他副本使用
         if (!request.getBarcode().equals(bookItem.getBarcode())) {
             if (bookItemRepository.existsByBarcode(request.getBarcode())) {
-                throw new IllegalArgumentException("条码号已被其他副本使用");
+                throw new IllegalArgumentException("The barcode number is already in use by another copy");
             }
         }
 
         // 如果更改了图书ID，验证新图书是否存在
         if (!request.getBookId().equals(bookItem.getBook().getBookId())) {
             Book newBook = bookRepository.findById(request.getBookId())
-                    .orElseThrow(() -> new IllegalArgumentException("新图书不存在"));
+                    .orElseThrow(() -> new IllegalArgumentException("The new book does not exist"));
             bookItem.setBook(newBook);
         }
 
@@ -176,7 +176,7 @@ public class BookItemService {
             try {
                 bookItem.setStatus(parseStatus(request.getStatus()));
             } catch (IllegalArgumentException e) {
-                throw new IllegalArgumentException("无效的副本状态: " + request.getStatus());
+                throw new IllegalArgumentException("Invalid copy status:" + request.getStatus());
             }
         }
 
@@ -198,7 +198,7 @@ public class BookItemService {
     public void deleteBookItem(Integer itemId) {
         // 检查副本是否存在
         if (!bookItemRepository.existsById(itemId)) {
-            throw new IllegalArgumentException("图书副本不存在");
+            throw new IllegalArgumentException("The book copy does not exist");
         }
 
         // 删除副本
@@ -239,7 +239,7 @@ public class BookItemService {
             case "Lost" -> BookItem.BookItemStatus.Lost;
             case "Damaged" -> BookItem.BookItemStatus.Damaged;
             case "Withdrawn" -> BookItem.BookItemStatus.Withdrawn;
-            default -> throw new IllegalArgumentException("无效的副本状态: " + status);
+            default -> throw new IllegalArgumentException("Invalid copy status:" + status);
         };
     }
 }

@@ -45,7 +45,7 @@ public class BorrowRecordController {
             BorrowRecordResponse response = borrowRecordService.borrowBook(userUuid, request);
             return ResponseEntity
                     .status(HttpStatus.CREATED)
-                    .body(ApiResponse.success("借阅成功", response));
+                    .body(ApiResponse.success("Borrowing successful", response));
         } catch (IllegalArgumentException e) {
             return ResponseEntity
                     .status(HttpStatus.BAD_REQUEST)
@@ -57,7 +57,7 @@ public class BorrowRecordController {
         } catch (Exception e) {
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(ApiResponse.error("借阅失败：" + e.getMessage()));
+                    .body(ApiResponse.error("Borrowing failed:" + e.getMessage()));
         }
     }
 
@@ -73,7 +73,7 @@ public class BorrowRecordController {
         try {
             String userUuid = getCurrentUserUuid();
             BorrowRecordResponse response = borrowRecordService.returnBook(recordId, userUuid);
-            return ResponseEntity.ok(ApiResponse.success("归还成功", response));
+            return ResponseEntity.ok(ApiResponse.success("Return successful", response));
         } catch (IllegalArgumentException e) {
             return ResponseEntity
                     .status(HttpStatus.BAD_REQUEST)
@@ -85,7 +85,7 @@ public class BorrowRecordController {
         } catch (Exception e) {
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(ApiResponse.error("归还失败：" + e.getMessage()));
+                    .body(ApiResponse.error("Return failed:" + e.getMessage()));
         }
     }
 
@@ -106,11 +106,11 @@ public class BorrowRecordController {
         try {
             String userUuid = getCurrentUserUuid();
             PageResponse<BorrowRecordResponse> response = borrowRecordService.getMyBorrowRecords(userUuid, page, size, status);
-            return ResponseEntity.ok(ApiResponse.success("获取借阅记录成功", response));
+            return ResponseEntity.ok(ApiResponse.success("Borrowing history retrieved successfully", response));
         } catch (Exception e) {
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(ApiResponse.error("获取借阅记录失败：" + e.getMessage()));
+                    .body(ApiResponse.error("Failed to retrieve borrowing records:" + e.getMessage()));
         }
     }
 
@@ -127,7 +127,7 @@ public class BorrowRecordController {
             String userUuid = getCurrentUserUuid();
             boolean isAdmin = isCurrentUserAdmin();
             BorrowRecordResponse response = borrowRecordService.getBorrowRecordDetail(recordId, userUuid, isAdmin);
-            return ResponseEntity.ok(ApiResponse.success("获取借阅记录详情成功", response));
+            return ResponseEntity.ok(ApiResponse.success("Successfully retrieved borrowing history details", response));
         } catch (IllegalArgumentException e) {
             return ResponseEntity
                     .status(HttpStatus.NOT_FOUND)
@@ -135,7 +135,7 @@ public class BorrowRecordController {
         } catch (Exception e) {
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(ApiResponse.error("获取借阅记录详情失败：" + e.getMessage()));
+                    .body(ApiResponse.error("Failed to retrieve borrowing history details:" + e.getMessage()));
         }
     }
 
@@ -161,11 +161,11 @@ public class BorrowRecordController {
         try {
             PageResponse<BorrowRecordResponse> response = borrowRecordService.getAllBorrowRecords(
                     page, size, userUuid, status, startDate, endDate);
-            return ResponseEntity.ok(ApiResponse.success("获取借阅记录成功", response));
+            return ResponseEntity.ok(ApiResponse.success("Borrowing history retrieved successfully", response));
         } catch (Exception e) {
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(ApiResponse.error("获取借阅记录失败：" + e.getMessage()));
+                    .body(ApiResponse.error("Failed to retrieve borrowing records:" + e.getMessage()));
         }
     }
 
@@ -182,7 +182,7 @@ public class BorrowRecordController {
             @Valid @RequestBody UpdateBorrowRecordRequest request) {
         try {
             BorrowRecordResponse response = borrowRecordService.updateBorrowRecord(recordId, request);
-            return ResponseEntity.ok(ApiResponse.success("更新借阅记录成功", response));
+            return ResponseEntity.ok(ApiResponse.success("Update borrowing records successful", response));
         } catch (IllegalArgumentException e) {
             return ResponseEntity
                     .status(HttpStatus.NOT_FOUND)
@@ -190,7 +190,7 @@ public class BorrowRecordController {
         } catch (Exception e) {
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(ApiResponse.error("更新借阅记录失败：" + e.getMessage()));
+                    .body(ApiResponse.error("Failed to update borrowing records:" + e.getMessage()));
         }
     }
 
@@ -207,11 +207,11 @@ public class BorrowRecordController {
             @RequestParam(defaultValue = "10") int size) {
         try {
             PageResponse<BorrowRecordResponse> response = borrowRecordService.getOverdueRecords(page, size);
-            return ResponseEntity.ok(ApiResponse.success("获取逾期记录成功", response));
+            return ResponseEntity.ok(ApiResponse.success("Successfully retrieved overdue records", response));
         } catch (Exception e) {
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(ApiResponse.error("获取逾期记录失败：" + e.getMessage()));
+                    .body(ApiResponse.error("Failed to retrieve overdue records:" + e.getMessage()));
         }
     }
 
@@ -234,4 +234,3 @@ public class BorrowRecordController {
                 .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ROLE_ADMIN"));
     }
 }
-

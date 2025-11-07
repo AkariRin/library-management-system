@@ -73,4 +73,3 @@ public interface BookRepository extends JpaRepository<Book, Integer> {
             Pageable pageable
     );
 }
-

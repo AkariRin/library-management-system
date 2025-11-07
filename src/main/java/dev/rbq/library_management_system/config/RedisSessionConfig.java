@@ -11,7 +11,7 @@ import org.springframework.session.web.http.DefaultCookieSerializer;
  * Redis Session 配置
  */
 @Configuration
-@EnableRedisHttpSession // 默认 30 分钟 (1800 秒)
+@EnableRedisHttpSession(maxInactiveIntervalInSeconds = 365 * 24 * 60 * 60) // 最大1年，实际由代码控制
 public class RedisSessionConfig {
     @Value("${spring.session.cookie.secure:true}")
     private boolean useSecureCookie;
@@ -19,6 +19,7 @@ public class RedisSessionConfig {
 
     /**
      * 配置 Session Cookie
+     * 注意：maxAge 不在这里设置，而是在登录时根据 rememberMe 动态设置
      */
     @Bean
     public CookieSerializer cookieSerializer() {
@@ -29,7 +30,8 @@ public class RedisSessionConfig {
         serializer.setUseHttpOnlyCookie(true);
         serializer.setUseSecureCookie(useSecureCookie); // 从配置文件读取
         serializer.setSameSite("Lax");
+        // 不设置 CookieMaxAge，让它默认为 -1（会话级别）
+        // 在登录时会根据 rememberMe 动态设置
         return serializer;
     }
 }
-

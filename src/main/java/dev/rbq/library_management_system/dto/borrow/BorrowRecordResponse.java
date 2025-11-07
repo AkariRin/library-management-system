@@ -172,4 +172,3 @@ public class BorrowRecordResponse {
         this.isOverdue = isOverdue;
     }
 }
-

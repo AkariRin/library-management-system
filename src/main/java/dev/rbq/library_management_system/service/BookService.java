@@ -37,7 +37,7 @@ public class BookService {
      */
     public BookResponse getBookDetail(Integer bookId) {
         Book book = bookRepository.findById(bookId)
-                .orElseThrow(() -> new IllegalArgumentException("图书不存在"));
+                .orElseThrow(() -> new IllegalArgumentException("The book does not exist"));
         return convertToResponse(book);
     }
 
@@ -98,7 +98,7 @@ public class BookService {
     public BookResponse addBook(BookRequest request) {
         // 检查ISBN是否已存在
         if (request.getIsbn() != null && bookRepository.existsByIsbn(request.getIsbn())) {
-            throw new IllegalArgumentException("ISBN已存在");
+            throw new IllegalArgumentException("ISBN already exists");
         }
 
         // 创建图书实体
@@ -128,12 +128,12 @@ public class BookService {
     public BookResponse updateBook(Integer bookId, BookRequest request) {
         // 查找图书
         Book book = bookRepository.findById(bookId)
-                .orElseThrow(() -> new IllegalArgumentException("图书不存在"));
+                .orElseThrow(() -> new IllegalArgumentException("The book does not exist"));
 
         // 检查ISBN是否已被其他图书使用
         if (request.getIsbn() != null && !request.getIsbn().equals(book.getIsbn())) {
             if (bookRepository.existsByIsbn(request.getIsbn())) {
-                throw new IllegalArgumentException("ISBN已被其他图书使用");
+                throw new IllegalArgumentException("This ISBN is already in use by another book");
             }
         }
 
@@ -161,7 +161,7 @@ public class BookService {
     public void deleteBook(Integer bookId) {
         // 检查图书是否存在
         if (!bookRepository.existsById(bookId)) {
-            throw new IllegalArgumentException("图书不存在");
+            throw new IllegalArgumentException("The book does not exist.");
         }
 
         // 删除图书（会级联删除所有副本）

@@ -33,7 +33,7 @@ public class BookItemController {
     public ResponseEntity<ApiResponse<BookItemResponse>> getBookItemDetail(@PathVariable Integer itemId) {
         try {
             BookItemResponse response = bookItemService.getBookItemDetail(itemId);
-            return ResponseEntity.ok(ApiResponse.success("获取图书副本详情成功", response));
+            return ResponseEntity.ok(ApiResponse.success("Successfully retrieved book copy details", response));
         } catch (IllegalArgumentException e) {
             return ResponseEntity
                     .status(HttpStatus.NOT_FOUND)
@@ -41,7 +41,7 @@ public class BookItemController {
         } catch (Exception e) {
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(ApiResponse.error("获取图书副本详情失败：" + e.getMessage()));
+                    .body(ApiResponse.error("Failed to retrieve book copy details:" + e.getMessage()));
         }
     }
 
@@ -68,7 +68,7 @@ public class BookItemController {
         try {
             PageResponse<BookItemResponse> response = bookItemService.getBookItemsByBookId(
                     bookId, page, size, status, sortBy, sortDirection);
-            return ResponseEntity.ok(ApiResponse.success("获取图书副本列表成功", response));
+            return ResponseEntity.ok(ApiResponse.success("List of book copies successfully retrieved", response));
         } catch (IllegalArgumentException e) {
             return ResponseEntity
                     .status(HttpStatus.BAD_REQUEST)
@@ -76,7 +76,7 @@ public class BookItemController {
         } catch (Exception e) {
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(ApiResponse.error("获取图书副本列表失败：" + e.getMessage()));
+                    .body(ApiResponse.error("Failed to retrieve the list of book copies:" + e.getMessage()));
         }
     }
 
@@ -93,7 +93,7 @@ public class BookItemController {
             BookItemResponse response = bookItemService.addBookItem(request);
             return ResponseEntity
                     .status(HttpStatus.CREATED)
-                    .body(ApiResponse.success("添加图书副本成功", response));
+                    .body(ApiResponse.success("Book copy added", response));
         } catch (IllegalArgumentException e) {
             return ResponseEntity
                     .status(HttpStatus.BAD_REQUEST)
@@ -101,7 +101,7 @@ public class BookItemController {
         } catch (Exception e) {
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(ApiResponse.error("添加图书副本失败：" + e.getMessage()));
+                    .body(ApiResponse.error("Failed to add book copy:" + e.getMessage()));
         }
     }
 
@@ -119,7 +119,7 @@ public class BookItemController {
             @Valid @RequestBody BookItemRequest request) {
         try {
             BookItemResponse response = bookItemService.updateBookItem(itemId, request);
-            return ResponseEntity.ok(ApiResponse.success("更新图书副本成功", response));
+            return ResponseEntity.ok(ApiResponse.success("Book copy updated", response));
         } catch (IllegalArgumentException e) {
             return ResponseEntity
                     .status(HttpStatus.BAD_REQUEST)
@@ -127,7 +127,7 @@ public class BookItemController {
         } catch (Exception e) {
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(ApiResponse.error("更新图书副本失败：" + e.getMessage()));
+                    .body(ApiResponse.error("Failed to update book copy:" + e.getMessage()));
         }
     }
 
@@ -142,7 +142,7 @@ public class BookItemController {
     public ResponseEntity<ApiResponse<Void>> deleteBookItem(@PathVariable Integer itemId) {
         try {
             bookItemService.deleteBookItem(itemId);
-            return ResponseEntity.ok(ApiResponse.success("删除图书副本成功", null));
+            return ResponseEntity.ok(ApiResponse.success("Book copy deleted", null));
         } catch (IllegalArgumentException e) {
             return ResponseEntity
                     .status(HttpStatus.NOT_FOUND)
@@ -150,8 +150,7 @@ public class BookItemController {
         } catch (Exception e) {
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(ApiResponse.error("删除图书副本失败：" + e.getMessage()));
+                    .body(ApiResponse.error("Failed to delete book copy:" + e.getMessage()));
         }
     }
 }
-

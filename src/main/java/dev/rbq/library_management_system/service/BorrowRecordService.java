@@ -50,20 +50,20 @@ public class BorrowRecordService {
     public BorrowRecordResponse borrowBook(String userUuid, BorrowRequest request) {
         // 验证用户是否存在
         User user = userRepository.findById(userUuid)
-                .orElseThrow(() -> new IllegalArgumentException("用户不存在"));
+                .orElseThrow(() -> new IllegalArgumentException("User does not exist"));
 
         // 验证图书副本是否存在
         BookItem bookItem = bookItemRepository.findById(request.getItemId())
-                .orElseThrow(() -> new IllegalArgumentException("图书副本不存在"));
+                .orElseThrow(() -> new IllegalArgumentException("The book copy does not exist."));
 
         // 检查图书副本状态是否可借
         if (bookItem.getStatus() != BookItemStatus.Available) {
-            throw new IllegalStateException("该图书副本当前不可借阅，状态：" + bookItem.getStatus().getDescription());
+            throw new IllegalStateException("This copy of the book is currently unavailable for borrowing. Status:" + bookItem.getStatus().getDescription());
         }
 
         // 检查是否已存在未归还的借阅记录
         if (borrowRecordRepository.existsByBookItemIdAndStatusCheckedOut(bookItem.getItemId())) {
-            throw new IllegalStateException("该图书副本已被借出");
+            throw new IllegalStateException("This copy of the book is currently checked out");
         }
 
         // 创建借阅记录
@@ -167,11 +167,11 @@ public class BorrowRecordService {
      */
     public BorrowRecordResponse getBorrowRecordDetail(String recordId, String currentUserUuid, boolean isAdmin) {
         BorrowRecord borrowRecord = borrowRecordRepository.findById(recordId)
-                .orElseThrow(() -> new IllegalArgumentException("借阅记录不存在"));
+                .orElseThrow(() -> new IllegalArgumentException("No borrowing records found"));
 
         // 如果不是管理员，只能查看自己的借阅记录
         if (!isAdmin && !borrowRecord.getUser().getUuid().equals(currentUserUuid)) {
-            throw new IllegalArgumentException("无权查看此借阅记录");
+            throw new IllegalArgumentException("You do not have permission to view this borrowing record");
         }
 
         return convertToResponse(borrowRecord);
@@ -186,7 +186,7 @@ public class BorrowRecordService {
     @Transactional
     public BorrowRecordResponse updateBorrowRecord(String recordId, UpdateBorrowRecordRequest request) {
         BorrowRecord borrowRecord = borrowRecordRepository.findById(recordId)
-                .orElseThrow(() -> new IllegalArgumentException("借阅记录不存在"));
+                .orElseThrow(() -> new IllegalArgumentException("No borrowing records found"));
 
         // 更新应还日期
         if (request.getDueDate() != null) {
@@ -231,16 +231,16 @@ public class BorrowRecordService {
     @Transactional
     public BorrowRecordResponse returnBook(String recordId, String currentUserUuid) {
         BorrowRecord borrowRecord = borrowRecordRepository.findById(recordId)
-                .orElseThrow(() -> new IllegalArgumentException("借阅记录不存在"));
+                .orElseThrow(() -> new IllegalArgumentException("No borrowing records found"));
 
         // 验证是否为本人的借阅记录
         if (!borrowRecord.getUser().getUuid().equals(currentUserUuid)) {
-            throw new IllegalArgumentException("无权操作此借阅记录");
+            throw new IllegalArgumentException("You do not have permission to perform this operation on this borrowing record");
         }
 
         // 验证状态是否为已借出
         if (borrowRecord.getStatus() != BorrowStatus.Checked_Out) {
-            throw new IllegalStateException("该借阅记录状态为：" + borrowRecord.getStatus().getDescription() + "，无法归还");
+            throw new IllegalStateException("The status of this borrowing record is:" + borrowRecord.getStatus().getDescription() + "，无法归还");
         }
 
         // 更新借阅记录状态

@@ -80,16 +80,15 @@ public class SecurityConfig {
                         .authenticationEntryPoint((request, response, authException) -> {
                             response.setStatus(401);
                             response.setContentType("application/json;charset=UTF-8");
-                            response.getWriter().write("{\"success\":false,\"message\":\"未认证或会话已过期\",\"data\":null}");
+                            response.getWriter().write("{\"success\":false,\"message\":\"Unauthorized\",\"data\":null}");
                         })
                         .accessDeniedHandler((request, response, accessDeniedException) -> {
                             response.setStatus(403);
                             response.setContentType("application/json;charset=UTF-8");
-                            response.getWriter().write("{\"success\":false,\"message\":\"权限不足\",\"data\":null}");
+                            response.getWriter().write("{\"success\":false,\"message\":\"Insufficient permissions\",\"data\":null}");
                         })
                 );
 
         return http.build();
     }
 }
-
