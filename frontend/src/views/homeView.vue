@@ -219,10 +219,16 @@ import { useRouter } from 'vue-router'
 import { useUserdataStore } from '@/stores/userdata'
 import axios from 'axios'
 
-// ==================== 类型定义 ====================
+// 类型定义
 interface PageResponse<T> {
   content: T[]
   totalElements: number
+}
+
+interface Book {
+  bookId: number
+  title: string
+  author: string
 }
 
 interface BorrowRecord {
@@ -235,11 +241,11 @@ interface AxiosError {
   response?: { data?: { message?: string } }
 }
 
-// ==================== 路由和状态管理 ====================
+// 路由和状态管理
 const router = useRouter()
 const userStore = useUserdataStore()
 
-// ==================== UI 控制相关 ====================
+// UI 控制相关
 const loading = ref(false)
 const snackbar = ref(false)
 const snackbarText = ref('')
@@ -247,17 +253,17 @@ const snackbarColor = ref('success')
 const currentTime = ref('')
 let timeInterval: number | null = null
 
-// ==================== 用户信息 ====================
+// 用户信息
 const userName = computed(() => userStore.name || 'Guest')
 const username = computed(() => userStore.username || 'unknown')
 const isAdmin = computed(() => userStore.admin)
 
-// ==================== 统计数据 ====================
+// 统计数据
 const totalBooks = ref(0)
 const currentBorrowedBooks = ref(0)
 const overdueBooks = ref(0)
 
-// ==================== 计算属性 ====================
+// 计算属性
 const greeting = computed(() => {
   const hour = new Date().getHours()
   if (hour < 12) return 'Good morning! Have a great day! ☀️'
@@ -285,12 +291,12 @@ const dailyTip = computed(() => {
   return tips[dayOfYear % tips.length]
 })
 
-// ==================== 业务逻辑 ====================
+// 业务逻辑
 
 // 加载图书总数
 const loadTotalBooks = async () => {
   try {
-    const response = await axios.get<{ success: boolean; data: PageResponse<any> }>('/api/books', {
+    const response = await axios.get<{ success: boolean; data: PageResponse<Book> }>('/api/books', {
       params: { page: 0, size: 1 }
     })
     if (response.data.success && response.data.data) {
@@ -364,7 +370,6 @@ const updateCurrentTime = () => {
   })
 }
 
-// ==================== 生命周期 ====================
 onMounted(() => {
   loadDashboardData()
   updateCurrentTime()
@@ -384,4 +389,3 @@ onUnmounted(() => {
   opacity: 0.9;
 }
 </style>
-

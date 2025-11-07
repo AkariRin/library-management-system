@@ -405,4 +405,3 @@ const handleLogout = async () => {
   }
 }
 </script>
-

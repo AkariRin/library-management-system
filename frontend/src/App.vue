@@ -135,7 +135,7 @@ const confirmLogout = async () => {
     }, 1000)
   } catch (error) {
     console.error('Logout failed:', error)
-    // Even if logout fails on server, clear local state
+    // 登出失败也清理本地状态
     user.logout()
     logoutDialog.value = false
     router.push({ name: 'login' })

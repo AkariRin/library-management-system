@@ -81,15 +81,15 @@
       hide-default-footer
       class="elevation-2"
     >
-      <template v-slot:item.price="{ item }">
+      <template v-slot:[`item.price`]="{ item }">
         ¥{{ item.price ? item.price.toFixed(2) : '0.00' }}
       </template>
-      <template v-slot:item.availability="{ item }">
+      <template v-slot:[`item.availability`]="{ item }">
         <v-chip :color="item.availableCopies > 0 ? 'success' : 'error'" variant="flat" size="small">
           {{ item.availableCopies }} / {{ item.totalCopies }}
         </v-chip>
       </template>
-      <template v-slot:item.actions="{ item }">
+      <template v-slot:[`item.actions`]="{ item }">
         <v-btn color="info" variant="text" size="small" @click="viewBookDetails(item)">
           Details
         </v-btn>
@@ -210,12 +210,12 @@
             density="compact"
             class="elevation-1"
           >
-            <template v-slot:item.status="{ item }">
+            <template v-slot:[`item.status`]="{ item }">
               <v-chip :color="getStatusColor(item.status)" size="small" variant="flat">
                 {{ item.statusDescription }}
               </v-chip>
             </template>
-            <template v-slot:item.actions="{ item }">
+            <template v-slot:[`item.actions`]="{ item }">
               <v-btn
                 v-if="item.status === 'Available'"
                 color="success"
@@ -258,7 +258,7 @@
 import { ref, onMounted } from 'vue'
 import axios from 'axios'
 
-// ==================== 类型定义 ====================
+// 类型定义
 interface Book {
   bookId: number
   isbn?: string
@@ -302,7 +302,7 @@ interface AxiosError {
   response?: { data?: { message?: string } }
 }
 
-// ==================== UI 控制相关 ====================
+// UI 控制相关
 const loading = ref(false)
 const loadingCopies = ref(false)
 const borrowingItemId = ref<number | null>(null)
@@ -311,7 +311,7 @@ const snackbar = ref(false)
 const snackbarText = ref('')
 const snackbarColor = ref('success')
 
-// ==================== 数据相关 ====================
+// 数据相关
 const books = ref<Book[]>([])
 const selectedBook = ref<Book | null>(null)
 const bookCopies = ref<BookCopy[]>([])
@@ -354,7 +354,7 @@ const copiesHeaders = [
   { title: 'Actions', key: 'actions' }
 ]
 
-// ==================== 业务逻辑相关 ====================
+// 业务逻辑相关
 
 // 搜索图书
 const searchBooks = async () => {
@@ -503,12 +503,7 @@ const showMessage = (text: string, color: string) => {
   snackbar.value = true
 }
 
-// ==================== 生命周期 ====================
 onMounted(() => {
   searchBooks()
 })
 </script>
-
-<style scoped>
-</style>
-

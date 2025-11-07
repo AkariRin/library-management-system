@@ -539,7 +539,7 @@
 import { ref, onMounted, computed } from 'vue'
 import axios from 'axios'
 
-// ==================== 类型定义 ====================
+// 类型定义
 interface Book {
   bookId?: number
   isbn?: string
@@ -620,7 +620,7 @@ interface FormElement {
   reset: () => void
 }
 
-// ==================== UI 控制相关 ====================
+// UI 控制相关
 const activeTab = ref('books')
 const loadingBooks = ref(false)
 const loadingCopies = ref(false)
@@ -644,7 +644,7 @@ const snackbar = ref(false)
 const snackbarText = ref('')
 const snackbarColor = ref('success')
 
-// ==================== 数据相关 ====================
+// 数据相关
 const books = ref<Book[]>([])
 const bookCopies = ref<BookCopy[]>([])
 const borrowRecords = ref<BorrowRecord[]>([])
@@ -702,7 +702,7 @@ const bookFormRef = ref<FormElement | null>(null)
 const copyFormRef = ref<FormElement | null>(null)
 const recordFormRef = ref<FormElement | null>(null)
 
-// ==================== 常量和选项 ====================
+// 常量和选项
 const statusOptions = [
   { text: 'All', value: null },
   { text: 'Checked Out', value: 'Checked_Out' },
@@ -767,7 +767,7 @@ const statusRules = [
   (v: string) => !!v || 'Status is required'
 ]
 
-// ==================== 计算属性 ====================
+// 计算属性
 const bookOptions = computed(() => {
   return books.value.map(book => ({
     text: `${book.title} (ID: ${book.bookId})`,
@@ -775,7 +775,7 @@ const bookOptions = computed(() => {
   }))
 })
 
-// ==================== 业务逻辑 - 图书管理 ====================
+// 业务逻辑 - 图书管理
 
 // 加载图书列表
 const loadBooks = async () => {
@@ -899,7 +899,7 @@ const deleteBook = async () => {
   }
 }
 
-// ==================== 业务逻辑 - 副本管理 ====================
+// 业务逻辑 - 副本管理
 
 // 加载图书副本列表
 const loadBookCopies = async () => {
@@ -1024,7 +1024,7 @@ const deleteCopy = async () => {
   }
 }
 
-// ==================== 业务逻辑 - 借阅记录管理 ====================
+// 业务逻辑 - 借阅记录管理
 
 // 加载所有借阅记录
 const loadAllBorrowRecords = async () => {
@@ -1109,7 +1109,7 @@ const saveRecord = async () => {
   }
 }
 
-// ==================== 业务逻辑 - 用户管理 ====================
+// 业务逻辑 - 用户管理
 
 // 加载所有用户列表
 const loadUsers = async () => {
@@ -1207,7 +1207,7 @@ const deleteUser = async () => {
   }
 }
 
-// ==================== 辅助函数 ====================
+// 辅助函数
 
 // 格式化日期显示
 const formatDate = (dateString: string): string => {
@@ -1262,12 +1262,7 @@ const showMessage = (text: string, color: string) => {
   snackbar.value = true
 }
 
-// ==================== 生命周期 ====================
 onMounted(() => {
   loadBooks()
 })
 </script>
-
-<style scoped>
-</style>
-

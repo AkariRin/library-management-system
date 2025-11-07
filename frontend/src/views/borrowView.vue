@@ -242,7 +242,7 @@
 import { ref, computed, onMounted } from 'vue'
 import axios from 'axios'
 
-// ==================== 类型定义 ====================
+// 类型定义
 interface BorrowRecord {
   recordId: string
   userUuid: string
@@ -276,7 +276,7 @@ interface AxiosError {
   response?: { data?: { message?: string } }
 }
 
-// ==================== UI 控制相关 ====================
+// UI 控制相关
 const loading = ref(false)
 const returningRecordId = ref<string | null>(null)
 const detailDialog = ref(false)
@@ -285,7 +285,7 @@ const snackbar = ref(false)
 const snackbarText = ref('')
 const snackbarColor = ref('success')
 
-// ==================== 数据相关 ====================
+// 数据相关
 const borrowRecords = ref<BorrowRecord[]>([])
 const selectedRecord = ref<BorrowRecord | null>(null)
 const recordToReturn = ref<BorrowRecord | null>(null)
@@ -313,12 +313,12 @@ const headers = [
   { title: 'Actions', key: 'actions', sortable: false }
 ]
 
-// ==================== 计算属性 ====================
+// 计算属性
 const overdueCount = computed(() => {
   return borrowRecords.value.filter(record => record.isOverdue && record.status === 'Checked_Out').length
 })
 
-// ==================== 业务逻辑相关 ====================
+// 业务逻辑相关
 
 // 加载借阅记录
 const loadBorrowRecords = async () => {
@@ -456,12 +456,7 @@ const showMessage = (text: string, color: string) => {
   snackbar.value = true
 }
 
-// ==================== 生命周期 ====================
 onMounted(() => {
   loadBorrowRecords()
 })
 </script>
-
-<style scoped>
-</style>
-
