@@ -3,6 +3,7 @@ import { useUserdataStore } from '@/stores/userdata'
 
 import loginView from '@/views/loginView.vue'
 import registerView from '@/views/registerView.vue'
+import homeView from '@/views/homeView.vue'
 import settingsView from '@/views/settingsView.vue'
 import booksView from '@/views/booksView.vue'
 import borrowView from '@/views/borrowView.vue'
@@ -11,7 +12,7 @@ import adminView from '@/views/adminView.vue'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
-    { path: '/', redirect: '/books' },
+    { path: '/', name: 'Home', component: homeView},
     { path: '/login', name: 'login', component: loginView, meta: { isPublic: true } },
     { path: '/register', name: 'register', component: registerView, meta: { isPublic: true } },
     { path: '/books', name: 'Books', component: booksView},
