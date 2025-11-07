@@ -12,7 +12,7 @@
         <v-select
           v-model="statusFilter"
           label="Status Filter"
-          variant="outlined"
+          variant="underlined"
           prepend-inner-icon="mdi-filter"
           :items="statusOptions"
           item-title="text"
@@ -41,30 +41,30 @@
       hide-default-footer
       class="elevation-2"
     >
-      <template v-slot:item.bookInfo="{ item }">
+      <template v-slot:[`item.bookInfo`]="{ item }">
         <div>
           <div class="font-weight-bold">{{ item.bookTitle }}</div>
           <div class="text-caption text-grey-darken-1">{{ item.bookAuthor }}</div>
         </div>
       </template>
-      <template v-slot:item.borrowDate="{ item }">
+      <template v-slot:[`item.borrowDate`]="{ item }">
         {{ formatDate(item.borrowDate) }}
       </template>
-      <template v-slot:item.dueDate="{ item }">
+      <template v-slot:[`item.dueDate`]="{ item }">
         <div :class="{ 'text-error font-weight-bold': item.isOverdue }">
           {{ formatDate(item.dueDate) }}
           <v-chip v-if="item.isOverdue" color="error" size="x-small" class="ml-1">Overdue</v-chip>
         </div>
       </template>
-      <template v-slot:item.returnDate="{ item }">
+      <template v-slot:[`item.returnDate`]="{ item }">
         {{ item.returnDate ? formatDate(item.returnDate) : 'Not returned' }}
       </template>
-      <template v-slot:item.status="{ item }">
+      <template v-slot:[`item.status`]="{ item }">
         <v-chip :color="getStatusColor(item.status)" size="small" variant="flat">
           {{ item.statusDescription }}
         </v-chip>
       </template>
-      <template v-slot:item.actions="{ item }">
+      <template v-slot:[`item.actions`]="{ item }">
         <v-btn
           v-if="item.status === 'Checked_Out'"
           color="success"

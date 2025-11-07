@@ -39,15 +39,15 @@
           hide-default-footer
           class="elevation-2"
         >
-          <template v-slot:item.price="{ item }">
+          <template v-slot:[`item.price`]="{ item }">
             ¥{{ item.price ? item.price.toFixed(2) : '0.00' }}
           </template>
-          <template v-slot:item.availability="{ item }">
+          <template v-slot:[`item.availability`]="{ item }">
             <v-chip :color="(item.availableCopies ?? 0) > 0 ? 'success' : 'error'" size="small" variant="flat">
               {{ item.availableCopies ?? 0 }} / {{ item.totalCopies ?? 0 }}
             </v-chip>
           </template>
-          <template v-slot:item.actions="{ item }">
+          <template v-slot:[`item.actions`]="{ item }">
             <v-btn color="primary" variant="text" size="small" @click="openEditBookDialog(item)" class="mr-1">
               Edit
             </v-btn>
@@ -55,7 +55,7 @@
               Delete
             </v-btn>
           </template>
-          <template v-slot:bottom>
+          <template #bottom>
             <div class="text-center pa-4">
               <v-pagination
                 v-model="bookCurrentPage"
@@ -75,7 +75,7 @@
             <v-select
               v-model="selectedBookForCopies"
               label="Select Book"
-              variant="outlined"
+              variant="underlined"
               :items="bookOptions"
               item-title="text"
               item-value="value"
@@ -105,15 +105,15 @@
           hide-default-footer
           class="elevation-2"
         >
-          <template v-slot:item.status="{ item }">
+          <template v-slot:[`item.status`]="{ item }">
             <v-chip :color="getStatusColor(item.status)" size="small" variant="flat">
               {{ item.statusDescription }}
             </v-chip>
           </template>
-          <template v-slot:item.acquisitionPrice="{ item }">
+          <template v-slot:[`item.acquisitionPrice`]="{ item }">
             ¥{{ item.acquisitionPrice ? item.acquisitionPrice.toFixed(2) : '0.00' }}
           </template>
-          <template v-slot:item.actions="{ item }">
+          <template v-slot:[`item.actions`]="{ item }">
             <v-btn color="primary" variant="text" size="small" @click="openEditCopyDialog(item)" class="mr-1">
               Edit
             </v-btn>
@@ -121,7 +121,7 @@
               Delete
             </v-btn>
           </template>
-          <template v-slot:bottom>
+          <template #bottom>
             <div class="text-center pa-4">
               <v-pagination
                 v-model="copyCurrentPage"
@@ -144,7 +144,7 @@
             <v-select
               v-model="recordStatusFilter"
               label="Status Filter"
-              variant="outlined"
+              variant="underlined"
               :items="statusOptions"
               item-title="text"
               item-value="value"
@@ -167,38 +167,38 @@
           hide-default-footer
           class="elevation-2"
         >
-          <template v-slot:item.user="{ item }">
+          <template v-slot:[`item.user`]="{ item }">
             <div>
               <div class="font-weight-bold">{{ item.userName }}</div>
               <div class="text-caption text-grey-darken-1">@{{ item.username }}</div>
             </div>
           </template>
-          <template v-slot:item.bookInfo="{ item }">
+          <template v-slot:[`item.bookInfo`]="{ item }">
             <div>
               <div class="font-weight-bold">{{ item.bookTitle }}</div>
               <div class="text-caption text-grey-darken-1">{{ item.bookAuthor }}</div>
             </div>
           </template>
-          <template v-slot:item.borrowDate="{ item }">
+          <template v-slot:[`item.borrowDate`]="{ item }">
             {{ formatDate(item.borrowDate) }}
           </template>
-          <template v-slot:item.dueDate="{ item }">
+          <template v-slot:[`item.dueDate`]="{ item }">
             <div :class="{ 'text-error font-weight-bold': item.isOverdue }">
               {{ formatDate(item.dueDate) }}
               <v-chip v-if="item.isOverdue" color="error" size="x-small" class="ml-1">Overdue</v-chip>
             </div>
           </template>
-          <template v-slot:item.status="{ item }">
+          <template v-slot:[`item.status`]="{ item }">
             <v-chip :color="getBorrowStatusColor(item.status)" size="small" variant="flat">
               {{ item.statusDescription }}
             </v-chip>
           </template>
-          <template v-slot:item.actions="{ item }">
+          <template v-slot:[`item.actions`]="{ item }">
             <v-btn color="info" variant="text" size="small" @click="openEditRecordDialog(item)">
               Edit
             </v-btn>
           </template>
-          <template v-slot:bottom>
+          <template #bottom>
             <div class="text-center pa-4">
               <v-pagination
                 v-model="recordCurrentPage"
@@ -224,7 +224,7 @@
           <v-text-field
             v-model="bookForm.title"
             label="Title *"
-            variant="outlined"
+            variant="underlined"
             :rules="titleRules"
             :disabled="savingBook"
             class="mb-2"
@@ -232,7 +232,7 @@
           <v-text-field
             v-model="bookForm.author"
             label="Author *"
-            variant="outlined"
+            variant="underlined"
             :rules="authorRules"
             :disabled="savingBook"
             class="mb-2"
@@ -240,21 +240,21 @@
           <v-text-field
             v-model="bookForm.isbn"
             label="ISBN"
-            variant="outlined"
+            variant="underlined"
             :disabled="savingBook"
             class="mb-2"
           ></v-text-field>
           <v-text-field
             v-model="bookForm.publisher"
             label="Publisher"
-            variant="outlined"
+            variant="underlined"
             :disabled="savingBook"
             class="mb-2"
           ></v-text-field>
           <v-text-field
             v-model="bookForm.publishDate"
             label="Publish Date"
-            variant="outlined"
+            variant="underlined"
             type="date"
             :disabled="savingBook"
             class="mb-2"
@@ -262,7 +262,7 @@
           <v-text-field
             v-model="bookForm.category"
             label="Category ID"
-            variant="outlined"
+            variant="underlined"
             type="number"
             :disabled="savingBook"
             class="mb-2"
@@ -270,7 +270,7 @@
           <v-text-field
             v-model="bookForm.price"
             label="Price"
-            variant="outlined"
+            variant="underlined"
             type="number"
             step="0.01"
             :disabled="savingBook"
@@ -279,7 +279,7 @@
           <v-textarea
             v-model="bookForm.summary"
             label="Summary"
-            variant="outlined"
+            variant="underlined"
             rows="3"
             :disabled="savingBook"
           ></v-textarea>
@@ -322,7 +322,7 @@
           <v-text-field
             v-model="copyForm.barcode"
             label="Barcode *"
-            variant="outlined"
+            variant="underlined"
             :rules="barcodeRules"
             :disabled="savingCopy"
             class="mb-2"
@@ -330,14 +330,14 @@
           <v-text-field
             v-model="copyForm.location"
             label="Location"
-            variant="outlined"
+            variant="underlined"
             :disabled="savingCopy"
             class="mb-2"
           ></v-text-field>
           <v-select
             v-model="copyForm.status"
             label="Status *"
-            variant="outlined"
+            variant="underlined"
             :items="copyStatusOptions"
             :rules="statusRules"
             :disabled="savingCopy"
@@ -346,7 +346,7 @@
           <v-text-field
             v-model="copyForm.acquisitionDate"
             label="Acquisition Date"
-            variant="outlined"
+            variant="underlined"
             type="date"
             :disabled="savingCopy"
             class="mb-2"
@@ -354,7 +354,7 @@
           <v-text-field
             v-model="copyForm.acquisitionPrice"
             label="Acquisition Price"
-            variant="outlined"
+            variant="underlined"
             type="number"
             step="0.01"
             :disabled="savingCopy"
@@ -363,7 +363,7 @@
           <v-textarea
             v-model="copyForm.notes"
             label="Notes"
-            variant="outlined"
+            variant="underlined"
             rows="2"
             :disabled="savingCopy"
           ></v-textarea>
@@ -414,7 +414,7 @@
           <v-text-field
             v-model="recordForm.dueDate"
             label="Due Date"
-            variant="outlined"
+            variant="underlined"
             type="datetime-local"
             :disabled="savingRecord"
             class="mb-2"
@@ -422,7 +422,7 @@
           <v-text-field
             v-model="recordForm.returnDate"
             label="Return Date"
-            variant="outlined"
+            variant="underlined"
             type="datetime-local"
             :disabled="savingRecord"
             class="mb-2"
@@ -430,7 +430,7 @@
           <v-select
             v-model="recordForm.status"
             label="Status"
-            variant="outlined"
+            variant="underlined"
             :items="borrowStatusOptions"
             :disabled="savingRecord"
           ></v-select>
@@ -509,8 +509,8 @@ interface BorrowRecord {
   isOverdue: boolean
 }
 
-interface PageResponse {
-  content: any[]
+interface PageResponse<T = unknown> {
+  content: T[]
   pageNumber: number
   pageSize: number
   totalElements: number
@@ -520,10 +520,10 @@ interface PageResponse {
   empty: boolean
 }
 
-interface ApiResponse {
+interface ApiResponse<T = unknown> {
   success: boolean
   message?: string
-  data?: any
+  data?: T | PageResponse<T>
 }
 
 interface AxiosError {
@@ -694,7 +694,7 @@ const loadBooks = async () => {
     })
     const data = response.data as ApiResponse
     if (data.success && data.data) {
-      const pageData = data.data as PageResponse
+      const pageData = data.data as PageResponse<Book>
       books.value = pageData.content
       bookTotalPages.value = pageData.totalPages
     }
@@ -819,7 +819,7 @@ const loadBookCopies = async () => {
 
     const data = response.data as ApiResponse
     if (data.success && data.data) {
-      const pageData = data.data as PageResponse
+      const pageData = data.data as PageResponse<BookCopy>
       bookCopies.value = pageData.content
       copyTotalPages.value = pageData.totalPages
     }
@@ -933,7 +933,7 @@ const deleteCopy = async () => {
 const loadAllBorrowRecords = async () => {
   loadingRecords.value = true
   try {
-    const params: any = {
+    const params: Record<string, number | string | null> = {
       page: recordCurrentPage.value - 1,
       size: recordPageSize.value
     }
@@ -946,7 +946,7 @@ const loadAllBorrowRecords = async () => {
     const data = response.data as ApiResponse
 
     if (data.success && data.data) {
-      const pageData = data.data as PageResponse
+      const pageData = data.data as PageResponse<BorrowRecord>
       borrowRecords.value = pageData.content
       recordTotalPages.value = pageData.totalPages
     }
@@ -984,7 +984,7 @@ const saveRecord = async () => {
 
   savingRecord.value = true
   try {
-    const payload: any = {}
+    const payload: Record<string, string> = {}
 
     if (recordForm.value.dueDate) {
       payload.dueDate = new Date(recordForm.value.dueDate).toISOString()
@@ -1041,7 +1041,7 @@ const formatDateForInput = (dateString: string): string => {
 
 // 获取副本状态颜色
 const getStatusColor = (status: string): string => {
-  const colorMap: any = {
+  const colorMap: Record<string, string> = {
     'Available': 'success',
     'Checked_Out': 'warning',
     'Lost': 'error',
@@ -1053,7 +1053,7 @@ const getStatusColor = (status: string): string => {
 
 // 获取借阅状态颜色
 const getBorrowStatusColor = (status: string): string => {
-  const colorMap: any = {
+  const colorMap: Record<string, string> = {
     'Checked_Out': 'warning',
     'Returned': 'success'
   }

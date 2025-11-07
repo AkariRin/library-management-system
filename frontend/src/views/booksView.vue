@@ -19,7 +19,7 @@
               <v-text-field
                 v-model="searchFilters.title"
                 label="Book Title"
-                variant="outlined"
+                variant="underlined"
                 prepend-inner-icon="mdi-book"
                 clearable
                 @keyup.enter="searchBooks"
@@ -29,7 +29,7 @@
               <v-text-field
                 v-model="searchFilters.author"
                 label="Author"
-                variant="outlined"
+                variant="underlined"
                 prepend-inner-icon="mdi-account-edit"
                 clearable
                 @keyup.enter="searchBooks"
@@ -39,7 +39,7 @@
               <v-text-field
                 v-model="searchFilters.category"
                 label="Category ID"
-                variant="outlined"
+                variant="underlined"
                 prepend-inner-icon="mdi-tag"
                 type="number"
                 clearable
@@ -50,7 +50,7 @@
               <v-select
                 v-model="searchFilters.sortBy"
                 label="Sort By"
-                variant="outlined"
+                variant="underlined"
                 prepend-inner-icon="mdi-sort"
                 :items="sortOptions"
                 item-title="text"
@@ -63,7 +63,7 @@
               <v-btn color="primary" variant="elevated" prepend-icon="mdi-magnify" @click="searchBooks" :loading="loading">
                 Search
               </v-btn>
-              <v-btn color="grey" variant="outlined" prepend-icon="mdi-refresh" @click="resetFilters">
+              <v-btn color="grey" variant="text" prepend-icon="mdi-refresh" @click="resetFilters">
                 Reset
               </v-btn>
             </v-col>
@@ -192,7 +192,7 @@
           <div class="text-h6 mb-3">Available Copies</div>
           <v-btn
             color="primary"
-            variant="outlined"
+            variant="text"
             size="small"
             prepend-icon="mdi-refresh"
             @click="loadBookCopies"
