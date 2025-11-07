@@ -23,7 +23,7 @@ public class DefaultAdminInitializer {
 
     private static final Logger logger = LoggerFactory.getLogger(DefaultAdminInitializer.class);
 
-    private static final String DEFAULT_ADMIN_NAME = "Administrator";
+    private static final String DEFAULT_ADMIN_NAME = "Admin";
     private static final String USERNAME_PREFIX = "admin_";
     private static final int MAX_USERNAME_ATTEMPTS = 100;
 

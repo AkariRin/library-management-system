@@ -18,6 +18,15 @@
                 hint="Used for login (unique identifier)"
               ></v-text-field>
               <v-text-field
+                v-model="name"
+                label="Display Name"
+                prepend-inner-icon="mdi-card-account-details"
+                type="text"
+                variant="underlined"
+                :rules="nameRules"
+                hint="Your display name (1-12 characters)"
+              ></v-text-field>
+              <v-text-field
                 v-model="password"
                 label="Password"
                 prepend-inner-icon="mdi-lock"
