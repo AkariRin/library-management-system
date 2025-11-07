@@ -25,4 +25,11 @@ public interface UserRepository extends JpaRepository<User, String> {
      * @return true 如果用户名已存在，否则 false
      */
     boolean existsByUsername(String username);
+
+    /**
+     * 检查是否存在管理员账户
+     * @param admin 管理员标识
+     * @return true 如果存在管理员账户，否则 false
+     */
+    boolean existsByAdmin(Boolean admin);
 }
