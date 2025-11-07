@@ -20,6 +20,10 @@
         <v-icon start icon="mdi-book-clock"></v-icon>
         All Borrow Records
       </v-tab>
+      <v-tab value="users">
+        <v-icon start icon="mdi-account-multiple"></v-icon>
+        Manage Users
+      </v-tab>
     </v-tabs>
 
     <v-window v-model="activeTab">
@@ -210,8 +214,81 @@
           </template>
         </v-data-table>
       </v-window-item>
+
+      <!-- 用户管理标签页 -->
+      <v-window-item value="users">
+        <div class="mb-4">
+          <v-btn color="primary" variant="elevated" prepend-icon="mdi-refresh" @click="loadUsers" :loading="loadingUsers">
+            Refresh
+          </v-btn>
+        </div>
+
+        <v-data-table
+          :headers="userHeaders"
+          :items="users"
+          :loading="loadingUsers"
+          items-per-page="15"
+          class="elevation-2"
+        >
+          <template v-slot:[`item.user`]="{ item }">
+            <div>
+              <div class="font-weight-bold">{{ item.name }}</div>
+              <div class="text-caption text-grey-darken-1">@{{ item.username }}</div>
+            </div>
+          </template>
+          <template v-slot:[`item.uuid`]="{ item }">
+            <span class="text-caption text-grey">{{ item.uuid }}</span>
+          </template>
+          <template v-slot:[`item.admin`]="{ item }">
+            <v-chip :color="item.admin ? 'primary' : 'grey'" size="small" variant="flat">
+              {{ item.admin ? 'Admin' : 'User' }}
+            </v-chip>
+          </template>
+          <template v-slot:[`item.actions`]="{ item }">
+            <v-btn
+              v-if="!item.isCurrentUser"
+              :color="item.admin ? 'warning' : 'success'"
+              variant="text"
+              size="small"
+              @click="toggleAdminStatus(item)"
+              class="mr-1"
+            >
+              {{ item.admin ? 'Remove Admin' : 'Make Admin' }}
+            </v-btn>
+            <v-btn
+              v-if="!item.isCurrentUser"
+              color="error"
+              variant="text"
+              size="small"
+              @click="openDeleteUserDialog(item)"
+            >
+              Delete
+            </v-btn>
+            <v-chip v-else color="info" size="small" variant="tonal">You</v-chip>
+          </template>
+        </v-data-table>
+      </v-window-item>
     </v-window>
   </v-card-text>
+
+  <!-- 删除用户确认对话框 -->
+  <v-dialog v-model="deleteUserDialog" max-width="400px">
+    <v-card>
+      <v-card-title class="text-h5">Confirm Delete</v-card-title>
+      <v-card-text>
+        Are you sure you want to delete this user? This action cannot be undone.
+        <div class="mt-4" v-if="userToDelete">
+          <div class="font-weight-bold">{{ userToDelete.name }}</div>
+          <div class="text-caption">@{{ userToDelete.username }}</div>
+        </div>
+      </v-card-text>
+      <v-card-actions>
+        <v-spacer></v-spacer>
+        <v-btn color="grey" variant="text" @click="deleteUserDialog = false" :disabled="deletingUser">Cancel</v-btn>
+        <v-btn color="error" variant="elevated" @click="deleteUser" :loading="deletingUser">Delete</v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
 
   <!-- 添加/编辑图书对话框 -->
   <v-dialog v-model="bookDialog" max-width="600px">
@@ -509,6 +586,14 @@ interface BorrowRecord {
   isOverdue: boolean
 }
 
+interface AdminUser {
+  uuid: string
+  username: string
+  name: string
+  admin: boolean
+  isCurrentUser?: boolean
+}
+
 interface PageResponse<T = unknown> {
   content: T[]
   pageNumber: number
@@ -540,17 +625,20 @@ const activeTab = ref('books')
 const loadingBooks = ref(false)
 const loadingCopies = ref(false)
 const loadingRecords = ref(false)
+const loadingUsers = ref(false)
 const savingBook = ref(false)
 const deletingBook = ref(false)
 const savingCopy = ref(false)
 const deletingCopy = ref(false)
 const savingRecord = ref(false)
+const deletingUser = ref(false)
 
 const bookDialog = ref(false)
 const deleteBookDialog = ref(false)
 const copyDialog = ref(false)
 const deleteCopyDialog = ref(false)
 const recordDialog = ref(false)
+const deleteUserDialog = ref(false)
 
 const snackbar = ref(false)
 const snackbarText = ref('')
@@ -560,6 +648,7 @@ const snackbarColor = ref('success')
 const books = ref<Book[]>([])
 const bookCopies = ref<BookCopy[]>([])
 const borrowRecords = ref<BorrowRecord[]>([])
+const users = ref<AdminUser[]>([])
 
 const bookCurrentPage = ref(1)
 const bookPageSize = ref(10)
@@ -581,6 +670,7 @@ const bookToDelete = ref<Book | null>(null)
 const editingCopy = ref<BookCopy | null>(null)
 const copyToDelete = ref<BookCopy | null>(null)
 const editingRecord = ref<BorrowRecord | null>(null)
+const userToDelete = ref<AdminUser | null>(null)
 
 const bookForm = ref<Book>({
   title: '',
@@ -647,6 +737,13 @@ const recordHeaders = [
   { title: 'Borrow Date', key: 'borrowDate', sortable: false },
   { title: 'Due Date', key: 'dueDate', sortable: false },
   { title: 'Status', key: 'status', sortable: false },
+  { title: 'Actions', key: 'actions', sortable: false }
+]
+
+const userHeaders = [
+  { title: 'User', key: 'user', sortable: false },
+  { title: 'UUID', key: 'uuid', sortable: false },
+  { title: 'Role', key: 'admin', sortable: false },
   { title: 'Actions', key: 'actions', sortable: false }
 ]
 
@@ -1009,6 +1106,104 @@ const saveRecord = async () => {
     showMessage(axiosError.response?.data?.message || 'Failed to update record', 'error')
   } finally {
     savingRecord.value = false
+  }
+}
+
+// ==================== 业务逻辑 - 用户管理 ====================
+
+// 加载所有用户列表
+const loadUsers = async () => {
+  loadingUsers.value = true
+  try {
+    const response = await axios.get('/api/admin/users')
+    const data = response.data as ApiResponse<AdminUser[]>
+
+    if (data.success && data.data) {
+      // 获取当前登录用户的UUID
+      const currentUserResponse = await axios.get('/api/user/me')
+      const currentUserData = currentUserResponse.data as ApiResponse
+      const currentUserUuid = (currentUserData.data as { uuid: string })?.uuid
+
+      // 标记当前用户
+      users.value = (data.data as AdminUser[]).map((user: AdminUser) => ({
+        ...user,
+        isCurrentUser: user.uuid === currentUserUuid
+      }))
+    }
+  } catch (error) {
+    const axiosError = error as AxiosError
+    showMessage(axiosError.response?.data?.message || 'Failed to load users', 'error')
+  } finally {
+    loadingUsers.value = false
+  }
+}
+
+// 切换管理员状态
+const toggleAdminStatus = async (user: AdminUser) => {
+  if (user.isCurrentUser) {
+    showMessage('You cannot modify your own administrator privileges', 'warning')
+    return
+  }
+
+  const newStatus = !user.admin
+  const action = newStatus ? 'grant administrator privileges to' : 'revoke administrator privileges from'
+
+  if (!confirm(`Are you sure you want to ${action} ${user.name} (@${user.username})?`)) {
+    return
+  }
+
+  try {
+    const response = await axios.post('/api/admin/users/admin-status', {
+      userUuid: user.uuid,
+      admin: newStatus
+    })
+
+    const data = response.data as ApiResponse<AdminUser>
+    if (data.success) {
+      showMessage(
+        newStatus
+          ? 'Administrator privileges granted successfully'
+          : 'Administrator privileges revoked successfully',
+        'success'
+      )
+      await loadUsers()
+    }
+  } catch (error) {
+    const axiosError = error as AxiosError
+    showMessage(axiosError.response?.data?.message || 'Failed to update user privileges', 'error')
+  }
+}
+
+// 打开删除用户对话框
+const openDeleteUserDialog = (user: AdminUser) => {
+  if (user.isCurrentUser) {
+    showMessage('You cannot delete your own account', 'warning')
+    return
+  }
+  userToDelete.value = user
+  deleteUserDialog.value = true
+}
+
+// 删除用户
+const deleteUser = async () => {
+  if (!userToDelete.value) return
+
+  deletingUser.value = true
+  try {
+    const response = await axios.delete(`/api/admin/users/${userToDelete.value.uuid}`)
+    const data = response.data as ApiResponse
+
+    if (data.success) {
+      showMessage('User deleted successfully', 'success')
+      deleteUserDialog.value = false
+      userToDelete.value = null
+      await loadUsers()
+    }
+  } catch (error) {
+    const axiosError = error as AxiosError
+    showMessage(axiosError.response?.data?.message || 'Failed to delete user', 'error')
+  } finally {
+    deletingUser.value = false
   }
 }
 
