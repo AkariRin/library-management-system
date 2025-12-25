@@ -6,6 +6,7 @@ import dev.rbq.library_management_system.dto.borrow.BorrowRecordResponse;
 import dev.rbq.library_management_system.dto.borrow.BorrowRequest;
 import dev.rbq.library_management_system.dto.borrow.UpdateBorrowRecordRequest;
 import dev.rbq.library_management_system.entity.BorrowRecord.BorrowStatus;
+import dev.rbq.library_management_system.security.UserDetailsImpl;
 import dev.rbq.library_management_system.service.BorrowRecordService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -221,7 +222,8 @@ public class BorrowRecordController {
      */
     private String getCurrentUserUuid() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return authentication.getName();
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+        return userDetails.getUser().getUuid();
     }
 
     /**

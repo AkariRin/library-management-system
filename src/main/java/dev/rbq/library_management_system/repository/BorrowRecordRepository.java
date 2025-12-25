@@ -54,6 +54,14 @@ public interface BorrowRecordRepository extends JpaRepository<BorrowRecord, Stri
     boolean existsByBookItemIdAndStatusCheckedOut(@Param("itemId") Integer itemId);
 
     /**
+     * 检查图书副本是否有任何借阅记录（包括历史记录）
+     * @param itemId 图书副本ID
+     * @return true 如果有任何借阅记录，否则 false
+     */
+    @Query("SELECT COUNT(br) > 0 FROM BorrowRecord br WHERE br.bookItem.itemId = :itemId")
+    boolean existsByBookItemId(@Param("itemId") Integer itemId);
+
+    /**
      * 查询用户当前借阅中的图书副本记录
      * @param userUuid 用户UUID
      * @param itemId 图书副本ID

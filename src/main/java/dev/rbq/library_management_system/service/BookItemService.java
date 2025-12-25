@@ -7,6 +7,7 @@ import dev.rbq.library_management_system.entity.Book;
 import dev.rbq.library_management_system.entity.BookItem;
 import dev.rbq.library_management_system.repository.BookItemRepository;
 import dev.rbq.library_management_system.repository.BookRepository;
+import dev.rbq.library_management_system.repository.BorrowRecordRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -29,6 +30,9 @@ public class BookItemService {
 
     @Autowired
     private BookRepository bookRepository;
+
+    @Autowired
+    private BorrowRecordRepository borrowRecordRepository;
 
     /**
      * 获取图书副本详情
@@ -199,6 +203,11 @@ public class BookItemService {
         // 检查副本是否存在
         if (!bookItemRepository.existsById(itemId)) {
             throw new IllegalArgumentException("The book copy does not exist");
+        }
+
+        // 检查是否有任何关联的借阅记录（包括历史记录）
+        if (borrowRecordRepository.existsByBookItemId(itemId)) {
+            throw new IllegalStateException("Cannot delete book copy: it has associated borrow records. Please consider withdrawing the book copy instead of deleting it.");
         }
 
         // 删除副本

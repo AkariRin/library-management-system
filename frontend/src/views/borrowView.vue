@@ -398,7 +398,7 @@ const confirmReturn = async () => {
 
   returningRecordId.value = recordToReturn.value.recordId
   try {
-    const response = await axios.put<{ success: boolean; message: string }>(
+    const response = await axios.post<{ success: boolean; message: string }>(
       `/api/borrow-records/${recordToReturn.value.recordId}/return`
     )
 
